@@ -9,9 +9,21 @@ from .models import (
 )
 
 
+class ParamKeywordInline(admin.TabularInline):
+    model = ParamKeyword
+    extra = 1
+    pass
+
+class ParamEmailInline(admin.TabularInline):
+    model = ParamEmail
+    extra = 1
+    pass
+
+
 @admin.register(Param)
 class ParamAdmin(admin.ModelAdmin):
     list_display = ('id', 'status', 'relevant', 'source', 'forum', 'created_at', 'updated_at')
+    inlines = (ParamKeywordInline, ParamEmailInline)
     pass
 
 

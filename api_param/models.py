@@ -18,6 +18,8 @@ class Param(Base):
     relevant = models.BooleanField(default=False)
     source = models.BooleanField(default=False)
     forum = models.BooleanField(default=False)
+    keywords = models.ManyToManyField('Keyword', through='ParamKeyword')
+    emails = models.ManyToManyField('Email', through='ParamEmail')
 
     class Meta:
         db_table = 'param'
