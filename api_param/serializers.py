@@ -14,8 +14,6 @@ class KeywordSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'keyword',
-            'created_at',
-            'updated_at'
         ]
         pass
     pass
@@ -27,8 +25,6 @@ class EmailSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'email',
-            'created_at',
-            'updated_at'
         ]
         pass
     pass
@@ -67,8 +63,6 @@ class ParamSerializer(serializers.ModelSerializer):
             'emails',
             'keyword_ids',
             'email_ids',
-            'created_at',
-            'updated_at'
         ]
         pass
 
@@ -89,3 +83,35 @@ class ParamSerializer(serializers.ModelSerializer):
             ParamEmail.objects.get_or_create(param=param, email=email)
 
         return param
+
+    def update(self, instance, validated_data):
+        keyword_ids = validated_data.pop('keyword_ids', [])
+        email_ids = validated_data.pop('email_ids', [])
+
+        # Atualiza os campos básicos do Param
+        instance.status = validated_data.get('status', instance.status)
+        instance.relevant = validated_data.get('relevant', instance.relevant)
+        instance.source = validated_data.get('source', instance.source)
+        instance.forum = validated_data.get('forum', instance.forum)
+        instance.save()
+
+        # Limpa as relações existentes com Keywords e Emails
+        if len(keyword_ids) != 0:
+            instance.keywords.clear()
+
+            # Relacionar ou criar novos Keywords
+            for keyword_id in keyword_ids:
+                keyword, created = Keyword.objects.get_or_create(id=keyword_id)
+                ParamKeyword.objects.get_or_create(param=instance, keyword=keyword)
+
+        if len(email_ids) != 0:
+            instance.emails.clear()
+
+            # Relacionar ou criar novos Emails
+            for email_id in email_ids:
+                email, created = Email.objects.get_or_create(id=email_id)
+                ParamEmail.objects.get_or_create(param=instance, email=email)
+
+        return instance
+
+    pass
