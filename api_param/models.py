@@ -15,11 +15,12 @@ class Base(models.Model):
 
 class Param(Base):
     status = models.BooleanField(default=True)
-    relevant = models.BooleanField(default=False)
-    source = models.BooleanField(default=False)
-    forum = models.BooleanField(default=False)
+    is_relevant = models.FloatField(default=1.0)
+    search_keyword = models.BooleanField(default=False)
+    search_source = models.BooleanField(default=False)
     keywords = models.ManyToManyField('Keyword', through='ParamKeyword')
     emails = models.ManyToManyField('Email', through='ParamEmail')
+    sources = models.ManyToManyField('Source', through='ParamSource')
 
     class Meta:
         db_table = 'param'
@@ -57,6 +58,19 @@ class Email(Base):
     pass
 
 
+class Source(Base):
+    name = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        db_table = 'source'
+
+        verbose_name = 'Source'
+        verbose_name_plural = 'Sources'
+        pass
+
+    pass
+
+
 class ParamKeyword(Base):
     param = models.ForeignKey(Param, on_delete=models.CASCADE)
     keyword = models.ForeignKey(Keyword, on_delete=models.CASCADE)
@@ -80,6 +94,20 @@ class ParamEmail(Base):
 
         verbose_name = 'Param Email'
         verbose_name_plural = 'Params Emails'
+        pass
+
+    pass
+
+
+class ParamSource(Base):
+    param = models.ForeignKey(Param, on_delete=models.CASCADE)
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'param_source'
+
+        verbose_name = 'Param Source'
+        verbose_name_plural = 'Params Sources'
         pass
 
     pass
