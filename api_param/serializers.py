@@ -59,9 +59,25 @@ class ParamSerializer(serializers.ModelSerializer):
         write_only=True,
     )
 
-    keywords = KeywordSerializer(many=True, read_only=True)
-    emails = EmailSerializer(many=True, read_only=True)
-    sources = SourceSerializer(many=True, read_only=True)
+    # keywords = KeywordSerializer(many=True, read_only=True)
+    # emails = EmailSerializer(many=True, read_only=True)
+    # sources = SourceSerializer(many=True, read_only=True)
+
+    keywords = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='keyword-detail'
+    )
+    emails = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='email-detail'
+    )
+    sources = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='source-detail'
+    )
 
     class Meta:
         extra_kwargs = {
