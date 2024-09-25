@@ -27,7 +27,7 @@ class KeywordSerializer(serializers.ModelSerializer):
         model = Keyword
         fields = (
             'id',
-            'keyword',
+            'word',
         )
 
         pass
