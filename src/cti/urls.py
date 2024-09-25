@@ -14,19 +14,32 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
 
-from api_param.urls import router
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+from alert_param.urls import alert_param_router
 
 
 # URI BASE
 BASE = 'api'
-VERSION = 'v1'
+VERSION = 'v2'
 
 urlpatterns = [
-    path(f'{BASE}/{VERSION}/', include(router.urls)),
+    # V2 API de perfis de alerta
+    path(f'{BASE}/{VERSION}/', include(alert_param_router.urls)),
 
+    # Simple JWT
+    path(f'{BASE}/{VERSION}/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path(f'{BASE}/{VERSION}/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # Admin
     path('admin/', admin.site.urls),
+    # Autenticação DRF
     path('auth/', include('rest_framework.urls')),
 ]
