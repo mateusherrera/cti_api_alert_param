@@ -177,9 +177,9 @@ if DEBUG:
         # ),
 
         # Permissions
-        'DEFAULT_PERMISSION_CLASSES': (
-            'rest_framework.permissions.DjangoModelPermissions',
-        ),
+        # 'DEFAULT_PERMISSION_CLASSES': (
+        #     'rest_framework.permissions.DjangoModelPermissions',
+        # ),
 
         # Pagination
         'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
