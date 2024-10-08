@@ -1,11 +1,11 @@
 """
 Cofigurações de administração do Django para o aplicativo alert_param.
 
-:author: Mateus Herrera Gobetti Borges
-:github: mateusherrera
+:author:        Mateus Herrera Gobetti Borges
+:github:        mateusherrera
 
-:created at: 2024-09-25
-:updated at: 2024-09-25
+:created at:    2024-09-25
+:updated at:    2024-09-25
 """
 
 from django.contrib import admin

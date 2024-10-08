@@ -1,3 +1,13 @@
+"""
+Endpoints para app (alert_param).
+
+:author:        Mateus Herrera Gobetti Borges
+:github:        mateusherrera
+
+:created at:    2024-09-25
+:updated at:    2024-09-25
+"""
+
 from rest_framework.routers import SimpleRouter
 
 from .views import (

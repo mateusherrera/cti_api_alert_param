@@ -1,14 +1,15 @@
 """
 Módulo que contém os serializadores dos models do app alert_param.
 
-:author: Mateus Herrera Gobetti Borges
-:github: mateusherrera
+:author:        Mateus Herrera Gobetti Borges
+:github:        mateusherrera
 
-:created at: 2024-09-25
-:updated at: 2024-09-25
+:created at:    2024-09-25
+:updated at:    2024-10-08
 """
 
 from rest_framework import serializers
+from datetime import date
 
 from .models import (
     Alert,
@@ -157,10 +158,51 @@ class AlertSerializer(serializers.ModelSerializer):
         """
 
         if not (0 <= value <= 1):
-            raise serializers.ValidationError("O campo 'is_relevant' deve ser um número entre 0 e 1.")
+            raise serializers.ValidationError({
+                'is_relevant': "O campo 'is_relevant' deve ser um número entre 0 e 1."
+            })
 
         value = value if value != 0 else 1.0
         return value
+    
+    def validate_start_date(self, value):
+        """
+        Valida se o campo start_date é maior ou igual ao atual.
+
+        :param value: Valor do campo start_date.
+        :return: Valor validado.
+        """
+
+        if value < date.today():
+            raise serializers.ValidationError({
+                'start_date': "A data de início não pode ser anterior a hoje."
+            })
+        return value
+
+    def validate_final_date(self, value):
+        """
+        Valida se o campo final_date e maior ou igual ao atual.
+
+        :param value: Valor do campo final_date.
+        :return: Valor validado.
+        """
+
+        if value < date.today():
+            raise serializers.ValidationError({
+                'final_date': "A data de início não pode ser anterior a hoje."
+            })
+        return value
+    
+    def validate(self, data):
+        start_date = data.get('start_date')
+        final_date = data.get('final_date')
+        
+        if final_date and start_date and final_date < start_date:
+            raise serializers.ValidationError({
+                'final_date': "A data final deve ser maior ou igual à data de início."
+            })
+        
+        return data
 
     def create(self, validated_data):
         """

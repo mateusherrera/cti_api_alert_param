@@ -1,11 +1,11 @@
 """
 Módulo que define as views da aplicação alert_param.
 
-:author: Mateus Herrera Gobetti Borges
-:github: mateusherrera
+:author:        Mateus Herrera Gobetti Borges
+:github:        mateusherrera
 
-:created at: 2024-09-25
-:updated at: 2024-09-25
+:created at:    2024-09-25
+:updated at:    2024-10-08
 """
 
 from rest_framework.decorators import action
@@ -56,6 +56,41 @@ class AlertViewSet(viewsets.ModelViewSet):
 
     queryset = Alert.objects.all()
     serializer_class = AlertSerializer
+
+    @action(detail=False, methods=['get'], url_path='active')
+    def get_active_alerts(self, request):
+        """
+        Retorna os alertas que estão ativos.
+
+        :param request: Requisição HTTP.
+        :return: Resposta HTTP contendo os alertas ativos.
+        """
+
+        active_alerts = Alert.objects.filter(is_active=True)
+        serializer = AlertSerializer(
+            active_alerts,
+            many=True,
+            context={'request': request}
+        )
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], url_path='user/(?P<id_user>[^/.]+)')
+    def get_alerts_by_user(self, request, id_user=None):
+        """
+        Retorna os alertas associados a um determinado id_user.
+
+        :param request: Requisição HTTP.
+        :param id_user: ID do usuário cujos alertas serão filtrados.
+        :return: Resposta HTTP contendo os alertas do usuário.
+        """
+
+        alerts = Alert.objects.filter(id_user=id_user)
+        serializer = AlertSerializer(
+            alerts,
+            many=True,
+            context={'request': request}
+        )
+        return Response(serializer.data)
 
     @action(detail=True, methods=['get'], url_path='keywords')
     def get_keywords(self, request, pk=None):
