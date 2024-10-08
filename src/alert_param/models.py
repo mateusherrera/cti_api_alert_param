@@ -5,7 +5,7 @@ Models para parametrização de alertas gerados no sistema de identificação de
 :github:        mateusherrera
 
 :created at:    2024-09-25
-:updated at:    2024-09-25
+:updated at:    2024-10-08
 """
 
 from django.db import models
@@ -120,7 +120,7 @@ class Alert(Base):
     qte_frequency = models.IntegerField()
     type_frequency = models.CharField(max_length=100)
     is_relevant = models.FloatField(default=1.0)
-    run = models.BooleanField(default=False)
+    run = models.DateField(null=True, blank=True)
 
     # Relationships
     keywords = models.ManyToManyField('Keyword')
@@ -145,5 +145,12 @@ class Alert(Base):
         """
 
         return f'Perfil de alerta criado pelo usuário com identificador: {self.id_user}'
+    
+    def save(self, *args, **kwargs):
+        """ Setar run com o mesmo valor de start_date. """
+
+        if not self.run:
+            self.run = self.start_date
+        super().save(*args, **kwargs)
 
     pass

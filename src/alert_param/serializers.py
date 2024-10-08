@@ -9,7 +9,7 @@ Módulo que contém os serializadores dos models do app alert_param.
 """
 
 from rest_framework import serializers
-from datetime import date
+from datetime import date, timedelta
 
 from .models import (
     Alert,
@@ -173,7 +173,8 @@ class AlertSerializer(serializers.ModelSerializer):
         :return: Valor validado.
         """
 
-        if value < date.today():
+        tomorrow = date.today() + timedelta(days=1)
+        if value < tomorrow:
             raise serializers.ValidationError({
                 'start_date': "A data de início não pode ser anterior a hoje."
             })
@@ -187,7 +188,8 @@ class AlertSerializer(serializers.ModelSerializer):
         :return: Valor validado.
         """
 
-        if value < date.today():
+        tomorrow = date.today() + timedelta(days=1)
+        if value < tomorrow:
             raise serializers.ValidationError({
                 'final_date': "A data de início não pode ser anterior a hoje."
             })
