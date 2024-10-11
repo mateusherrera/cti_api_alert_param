@@ -8,10 +8,11 @@ Application Programming Interface (API) desenvolvida em Django REST Framework qu
 ## Sumário
 
 * [Visão Geral](#visao-geral)
+* [Pacotes](#pacotes)
+* [Ambiente de Desenvolvimento](#env-dev)
 * [Autenticação](#autenticacao)
     * [Refresh Token](#refresh)
     * [Access Token](#access)
-* [Pacotes](#pacotes)
 * [Tabelas](#tabelas)
 * [Endpoints](#endpoints)
 
@@ -21,6 +22,25 @@ Application Programming Interface (API) desenvolvida em Django REST Framework qu
 ## Visão Geral
 
 A API tem como objetivo permitir a criação de perfis personalizados para a geração de alertas de ameaças cibernéticas com base em configurações definidas pelos usuários. Esses perfis possibilitam a definição de critérios como palavras-chave, fonte das postagens e percentual de relevância em relação à ameaça cibernética (esse valor é calculado por outra parte do projeto). Dessa forma, o sistema garante que os alertas emitidos sejam ajustados conforme as necessidades específicas, oferecendo maior precisão e eficiência no monitoramento de potenciais riscos cibernéticos.
+
+
+<a id="pacotes"></a>
+
+## Pacotes
+
+A base para o desenvolvimento da API foi o Django REST Framework, os demais pacotes estão listados em `requirements.txt`.
+
+
+<a id="env-dev"></a>
+
+## Ambiente de Desenvolvimento
+
+Para preparar o ambiente Python para desenvolvimeto siga os passos a seguir:
+
+1. Criar arquivo `.env`, com definição do tipo de ambiente (produção ou desenvolvimento) e credenciais de banco de dados:
+```
+...
+```
 
 
 <a id="autenticacao"></a>
@@ -40,13 +60,6 @@ O Refresh Token tem um tempo de vida mais longo em comparação ao Access Token 
 ### Access Token
 
 O Access Token tem um tempo de vida curto e é utilizado para acessar recursos específicos da API que requerem autenticação. Cada requisição a esses endpoints protegidos deve incluir o Access Token no cabeçalho de autorização. Esse token garante que apenas usuários autenticados e autorizados possam realizar operações nos recursos sensíveis da API. Quando o Access Token expira, o cliente pode solicitar um novo usando o Refresh Token.
-
-
-<a id="pacotes"></a>
-
-## Pacotes
-
-A base para o desenvolvimento da API foi o Django REST Framework, os demais pacotes estão listados em `requirements.txt`.
 
 
 <a id="tabelas"></a>
