@@ -172,14 +172,14 @@ MEDIA_ROOT = path.join(BASE_DIR, 'media')
 if DEBUG:
     REST_FRAMEWORK = {
         # Authentication
-        # 'DEFAULT_AUTHENTICATION_CLASSES': (
-        #     'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # ),
+        'DEFAULT_AUTHENTICATION_CLASSES': (
+            'rest_framework_simplejwt.authentication.JWTAuthentication',
+        ),
 
         # Permissions
-        # 'DEFAULT_PERMISSION_CLASSES': (
-        #     'rest_framework.permissions.DjangoModelPermissions',
-        # ),
+        'DEFAULT_PERMISSION_CLASSES': (
+            'rest_framework.permissions.DjangoModelPermissions',
+        ),
 
         # Pagination
         'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
