@@ -5,7 +5,7 @@ Módulo que contém os serializadores dos models do app alert_param.
 :github:        mateusherrera
 
 :created at:    2024-09-25
-:updated at:    2024-10-08
+:updated at:    2024-10-29
 """
 
 from rest_framework import serializers
@@ -134,6 +134,7 @@ class AlertSerializer(serializers.ModelSerializer):
             'email_ids',
             # end: relacionamentos
 
+            'last_run',
             'run'
         )
 
@@ -164,7 +165,7 @@ class AlertSerializer(serializers.ModelSerializer):
 
         value = value if value != 0 else 1.0
         return value
-    
+
     def validate_start_date(self, value):
         """
         Valida se o campo start_date é maior ou igual ao atual.
@@ -251,6 +252,7 @@ class AlertSerializer(serializers.ModelSerializer):
         instance.qte_frequency = validated_data.get('qte_frequency', instance.qte_frequency)
         instance.type_frequency = validated_data.get('type_frequency', instance.type_frequency) 
         instance.is_relevant = validated_data.get('is_relevant', instance.is_relevant)
+        instance.last_run = validated_data.get('last_run', instance.last_run)
         instance.run = validated_data.get('run', instance.run)
         instance.save()
 

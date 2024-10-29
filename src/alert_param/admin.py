@@ -5,7 +5,7 @@ Cofigurações de administração do Django para o aplicativo alert_param.
 :github:        mateusherrera
 
 :created at:    2024-09-25
-:updated at:    2024-09-25
+:updated at:    2024-10-29
 """
 
 from django.contrib import admin
@@ -67,6 +67,7 @@ class AlertAdmin(admin.ModelAdmin):
         'qte_frequency',
         'type_frequency',
         'is_relevant',
+        'last_run',
         'run'
     )
 

@@ -5,7 +5,7 @@ Models para parametrização de alertas gerados no sistema de identificação de
 :github:        mateusherrera
 
 :created at:    2024-09-25
-:updated at:    2024-10-08
+:updated at:    2024-10-29
 """
 
 from django.db import models
@@ -120,6 +120,7 @@ class Alert(Base):
     qte_frequency = models.IntegerField()
     type_frequency = models.CharField(max_length=100)
     is_relevant = models.FloatField(default=1.0)
+    last_run = models.DateField(null=True, blank=True)
     run = models.DateField(null=True, blank=True)
 
     # Relationships
