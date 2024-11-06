@@ -23,10 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@&fx4b4def$6knkl2*+869htz_q&0o^u4f#55-^5lf7r=xx__s'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if config('ENV') == 'development' else False
+if config('ENV') == 'production':
+    DEBUG = False
+elif config('ENV') == 'development':
+    DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -92,41 +95,35 @@ WSGI_APPLICATION = 'cti.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
-# if DEBUG:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME': config('DB_DEV_NAME'),
-#             'USER': config('DB_DEV_USER'),
-#             'PASSWORD': config('DB_DEV_PASSWORD'),
-#             'HOST': config('DB_DEV_HOST'),
-#             'PORT': config('DB_DEV_PORT'),
-#             'OPTIONS': {
-#                 'options': '-c search_path=django'
-#             },
-#         }
-#     }
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME': config('DB_PROD_NAME'),
-#             'USER': config('DB_PROD_USER'),
-#             'PASSWORD': config('DB_PROD_PASSWORD'),
-#             'HOST': config('DB_PROD_HOST'),
-#             'PORT': config('DB_PROD_PORT'),
-#             'OPTIONS': {
-#                 'options': '-c search_path=django'
-#             },
-#         }
-#     }
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_DEV_NAME'),
+            'USER': config('DB_DEV_USER'),
+            'PASSWORD': config('DB_DEV_PSWD'),
+            'HOST': config('DB_DEV_HOST'),
+            'PORT': config('DB_DEV_PORT'),
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_PROD_NAME'),
+            'USER': config('DB_PROD_USER'),
+            'PASSWORD': config('DB_PROD_PSWD'),
+            'HOST': config('DB_PROD_HOST'),
+            'PORT': config('DB_PROD_PORT'),
+        }
+    }
 
 
 # Password validation
@@ -219,12 +216,20 @@ else:
         },
     }
 
-    # Simple JWT
-    SIMPLE_JWT = {
-        'ACCESS_TOKEN_LIFETIME': timedelta(seconds=60),
-        'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-        'ROTATE_REFRESH_TOKENS': False,
-    }
+# Simple JWT
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": config('JWT_SECRET_KEY'),
+
+    "AUTH_HEADER_TYPES": (
+        "Bearer",
+        "JWT",
+    ),
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
