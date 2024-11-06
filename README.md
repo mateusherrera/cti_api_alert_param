@@ -30,6 +30,13 @@ A API tem como objetivo permitir a criação de perfis personalizados para a ger
 
 A base para o desenvolvimento da API foi o Django REST Framework, os demais pacotes estão listados em `requirements.txt`.
 
+Pacotes necessários para rodar o código no Linux (Ubuntu):
+
+```sh
+sudo apt-get update
+sudo apt-get install python3 python3-dev python3-venv python3-pip
+```
+
 
 <a id="env-dev"></a>
 
@@ -38,8 +45,28 @@ A base para o desenvolvimento da API foi o Django REST Framework, os demais paco
 Para preparar o ambiente Python para desenvolvimeto siga os passos a seguir:
 
 1. Criar arquivo `.env`, com definição do tipo de ambiente (produção ou desenvolvimento) e credenciais de banco de dados:
-```
-...
+
+```sh
+# Ambiente
+ENV='development'
+SECRET_KEY='secret_key_para_o_django'
+
+# JWT
+JWT_SECRET_KEY='secret_key_para_o_simple_jwt'
+
+# Database - Produção
+DB_PROD_NAME='nome_do_db'
+DB_PROD_USER='user_do_db'
+DB_PROD_PSWD='senha_do_db'
+DB_PROD_HOST='host_do_db'
+DB_PROD_PORT='porta_do_db'
+
+# Database - Desenvolvimento
+DB_DEV_NAME='nome_do_db'
+DB_DEV_USER='user_do_db'
+DB_DEV_PSWD='senha_do_db'
+DB_DEV_HOST='host_do_db'
+DB_DEV_PORT='porta_do_db'
 ```
 
 
