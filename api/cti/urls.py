@@ -15,8 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
+from django.conf.urls.static import static
 from django.urls import path, include
+from django.conf import settings
+from django.contrib import admin
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -31,15 +33,17 @@ BASE = 'api'
 VERSION = 'v2'
 
 urlpatterns = [
+    # Admin
+    path('admin/', admin.site.urls),
+    path('auth/', include('rest_framework.urls')),
+
     # V2 API de perfis de alerta
     path(f'{BASE}/{VERSION}/', include(alert_param_router.urls)),
 
     # Simple JWT
     path(f'{BASE}/{VERSION}/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path(f'{BASE}/{VERSION}/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
-    # Admin
-    path('admin/', admin.site.urls),
-    # Autenticação DRF
-    path('auth/', include('rest_framework.urls')),
 ]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
