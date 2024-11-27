@@ -26,17 +26,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if config('ENV') == 'production':
+if config('ENV') == 'prod':
     DEBUG = False
-elif config('ENV') == 'development':
+elif config('ENV') == 'dev':
     DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# SECURITY WARNING: define the correct hosts in production!
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
+if DEBUG:
+    CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
 INSTALLED_APPS = [
+    # Default apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,18 +47,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third-party apps
     'decouple',
     'corsheaders',
     'django_filters',
     'rest_framework',
     'rest_framework_simplejwt',
 
+    # Custom apps
     'alert_param',
+    'permissions',
 ]
-
-if DEBUG:
-    CORS_ORIGIN_ALLOW_ALL = True
-    ALLOWED_HOSTS = ['*']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -94,37 +96,20 @@ WSGI_APPLICATION = 'cti.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PSWD'),
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': config('DB_DEV_NAME'),
-            'USER': config('DB_DEV_USER'),
-            'PASSWORD': config('DB_DEV_PSWD'),
-            'HOST': config('DB_DEV_HOST'),
-            'PORT': config('DB_DEV_PORT'),
-        }
+        'OPTIONS': {
+            'options': '-c search_path=django'
+        },
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': config('DB_PROD_NAME'),
-            'USER': config('DB_PROD_USER'),
-            'PASSWORD': config('DB_PROD_PSWD'),
-            'HOST': config('DB_PROD_HOST'),
-            'PORT': config('DB_PROD_PORT'),
-        }
-    }
-
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -159,62 +144,31 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-
-STATIC_URL = 'static/'
+STATIC_URL = 'api/static/'
 STATIC_ROOT = path.join(BASE_DIR, 'staticfiles')
-MEDIA_URL = 'media/'
+MEDIA_URL = 'api/media/'
 MEDIA_ROOT = path.join(BASE_DIR, 'media')
 
-# Django Rest Framework
-if DEBUG:
-    REST_FRAMEWORK = {
-        # Authentication
-        'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework_simplejwt.authentication.JWTAuthentication',
-        ),
+# Rest Framework
+REST_FRAMEWORK = {
+    # Authentication
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 
-        # Permissions
-        'DEFAULT_PERMISSION_CLASSES': (
-            'rest_framework.permissions.DjangoModelPermissions',
-        ),
+    # Permissions
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.DjangoModelPermissions',
+    ),
 
-        # Pagination
-        'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-        'PAGE_SIZE': 30,
-
-        # Throttling
-        'DEFAULT_THROTTLE_CLASSES': (
-            'rest_framework.throttling.UserRateThrottle',
-        ),
-        'DEFAULT_THROTTLE_RATES': {
-            'user': '100/minute',
-        },
-    }
-
-else:
-    REST_FRAMEWORK = {
-        # Authentication
-        'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework_simplejwt.authentication.JWTAuthentication',
-        ),
-
-        # Permissions
-        'DEFAULT_PERMISSION_CLASSES': (
-            'rest_framework.permissions.DjangoModelPermissions',
-        ),
-
-        # Pagination
-        'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-        'PAGE_SIZE': 30,
-
-        # Throttling
-        'DEFAULT_THROTTLE_CLASSES': (
-            'rest_framework.throttling.UserRateThrottle',
-        ),
-        'DEFAULT_THROTTLE_RATES': {
-            'user': '100/minute',
-        },
-    }
+    # Throttling
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.UserRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '100/minute',
+    },
+}
 
 # Simple JWT
 SIMPLE_JWT = {
