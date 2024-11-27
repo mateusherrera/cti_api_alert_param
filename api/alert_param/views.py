@@ -8,6 +8,7 @@ Módulo que define as views da aplicação alert_param.
 :updated at:    2024-10-08
 """
 
+from permissions.mixins import PermissionsMixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -27,7 +28,7 @@ from .models import (
 )
 
 
-class KeywordViewSet(viewsets.ModelViewSet):
+class KeywordViewSet(viewsets.ModelViewSet, PermissionsMixins):
     """ ViewSet para o modelo Keyword. """
 
     queryset = Keyword.objects.all()
@@ -35,7 +36,7 @@ class KeywordViewSet(viewsets.ModelViewSet):
     pass
 
 
-class ForumViewSet(viewsets.ModelViewSet):
+class ForumViewSet(viewsets.ModelViewSet, PermissionsMixins):
     """ ViewSet para o modelo Forum. """
 
     queryset = Forum.objects.all()
@@ -43,7 +44,7 @@ class ForumViewSet(viewsets.ModelViewSet):
     pass
 
 
-class EmailViewSet(viewsets.ModelViewSet):
+class EmailViewSet(viewsets.ModelViewSet, PermissionsMixins):
     """ ViewSet para o modelo Email. """
 
     queryset = Email.objects.all()
@@ -51,7 +52,7 @@ class EmailViewSet(viewsets.ModelViewSet):
     pass
 
 
-class AlertViewSet(viewsets.ModelViewSet):
+class AlertViewSet(viewsets.ModelViewSet, PermissionsMixins):
     """ ViewSet para o modelo Alert. """
 
     queryset = Alert.objects.all()
