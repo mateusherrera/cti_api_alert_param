@@ -23,7 +23,7 @@ from alert_param.models import (
 )
 
 
-class KeywordViewSet(viewsets.ModelViewSet, PermissionsMixins):
+class KeywordViewSet(viewsets.ModelViewSet):
     """ ViewSet para o modelo Keyword. """
 
     queryset = Keyword.objects.all()
@@ -31,7 +31,7 @@ class KeywordViewSet(viewsets.ModelViewSet, PermissionsMixins):
     pass
 
 
-class ForumViewSet(viewsets.ModelViewSet, PermissionsMixins):
+class ForumViewSet(viewsets.ModelViewSet):
     """ ViewSet para o modelo Forum. """
 
     queryset = Forum.objects.all()
@@ -39,7 +39,7 @@ class ForumViewSet(viewsets.ModelViewSet, PermissionsMixins):
     pass
 
 
-class EmailViewSet(viewsets.ModelViewSet, PermissionsMixins):
+class EmailViewSet(viewsets.ModelViewSet):
     """ ViewSet para o modelo Email. """
 
     queryset = Email.objects.all()
@@ -47,7 +47,7 @@ class EmailViewSet(viewsets.ModelViewSet, PermissionsMixins):
     pass
 
 
-class AlertViewSet(viewsets.ModelViewSet, PermissionsMixins):
+class AlertViewSet(viewsets.ModelViewSet):
     """ ViewSet para o modelo Alert. """
 
     queryset = Alert.objects.all()
@@ -69,7 +69,7 @@ class AlertViewSet(viewsets.ModelViewSet, PermissionsMixins):
             context={'request': request}
         )
         return Response(serializer.data)
-    
+
     @action(detail=False, methods=['get'], url_path='user/(?P<id_user>[^/.]+)')
     def get_alerts_by_user(self, request, id_user=None):
         """

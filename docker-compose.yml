@@ -4,6 +4,9 @@ services:
       context: ./api
       dockerfile: Dockerfile
     container_name: cti_alerts_api
+    restart: always
+    env_file:
+      - ./api/.env
     command: gunicorn cti.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ./api:/api
@@ -12,11 +15,27 @@ services:
     expose:
       - "8000"
 
+  db:
+    image: postgres:15
+    container_name: cti_alerts_db
+    restart: always
+    env_file:
+      - ./api/.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init-scripts:/docker-entrypoint-initdb.d
+    # expose:
+    ports:
+      - "5432:5432"
+
   nginx:
     build:
       context: ./nginx
       dockerfile: Dockerfile
     container_name: cti_alerts_nginx
+    restart: always
+    env_file:
+      - ./api/.env
     volumes:
       - staticvolume:/api/staticfiles/
       - mediavolume:/api/mediafiles/
@@ -28,3 +47,4 @@ services:
 volumes:
   staticvolume:
   mediavolume:
+  postgres_data:

@@ -8,18 +8,19 @@ Models para parametrização de alertas gerados no sistema de identificação de
 from django.db import models
 
 
+SCHEMA_NAME = 'alert_param"."'
+
 class Base(models.Model):
     """ Model base para os modelos do aplicativo alert_param. """
 
-    id = models.AutoField(primary_key=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    id          = models.AutoField(primary_key=True)
+    created_at  = models.DateTimeField(auto_now_add=True)
+    updated_at  = models.DateTimeField(auto_now=True)
 
     class Meta:
         """ Meta informações para a classe Base. """
 
         abstract = True
-
         pass
 
     pass
@@ -33,11 +34,10 @@ class Keyword(Base):
     class Meta:
         """ Meta informações para a classe Keyword. """
 
-        db_table = 'keyword'
+        db_table = f'{SCHEMA_NAME}keyword'
 
         verbose_name = 'Keyword'
         verbose_name_plural = 'Keywords'
-
         pass
 
     def __str__(self):
@@ -60,11 +60,10 @@ class Forum(Base):
     class Meta:
         """ Meta informações para a classe Forum. """
 
-        db_table = 'forum'
+        db_table = f'{SCHEMA_NAME}forum'
 
         verbose_name = 'Forum'
         verbose_name_plural = 'Forums'
-
         pass
 
     def __str__(self):
@@ -87,11 +86,10 @@ class Email(Base):
     class Meta:
         """ Meta informações para a classe Email. """
 
-        db_table = 'email'
+        db_table = f'{SCHEMA_NAME}email'
 
         verbose_name = 'Email'
         verbose_name_plural = 'Emails'
-
         pass
 
     def __str__(self):
@@ -109,26 +107,24 @@ class Email(Base):
 class Alert(Base):
     """ Model para armazenar parâmetros de perfis de alertas criados. """
 
-    # Columns
-    is_active = models.BooleanField(default=True)
-    id_user = models.IntegerField()
-    start_date = models.DateField()
-    final_date = models.DateField()
-    qte_frequency = models.IntegerField()
-    type_frequency = models.CharField(max_length=100)
-    is_relevant = models.FloatField(default=1.0)
-    last_run = models.DateField(null=True, blank=True)
-    run = models.DateField(null=True, blank=True)
+    keywords    = models.ForeignKey(Keyword, on_delete=models.CASCADE)
+    forums      = models.ForeignKey(Forum, on_delete=models.CASCADE)
+    emails      = models.ForeignKey(Email, on_delete=models.CASCADE)
 
-    # Relationships
-    keywords = models.ManyToManyField('Keyword')
-    forums = models.ManyToManyField('Forum')
-    emails = models.ManyToManyField('Email')
+    is_active       = models.BooleanField(default=True)
+    id_user         = models.IntegerField()
+    start_date      = models.DateField()
+    final_date      = models.DateField()
+    qte_frequency   = models.IntegerField()
+    type_frequency  = models.CharField(max_length=100)
+    is_relevant     = models.FloatField(default=1.0, validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
+    last_run        = models.DateField(null=True, blank=True)
+    run             = models.DateField(null=True, blank=True)
 
     class Meta:
         """ Meta informações para a classe Alert. """
 
-        db_table = 'alert'
+        db_table = f'{SCHEMA_NAME}alert'
 
         verbose_name = 'Alert'
         verbose_name_plural = 'Alerts'
@@ -143,12 +139,5 @@ class Alert(Base):
         """
 
         return f'Perfil de alerta criado pelo usuário com identificador: {self.id_user}'
-    
-    def save(self, *args, **kwargs):
-        """ Setar run com o mesmo valor de start_date. """
-
-        if not self.run:
-            self.run = self.start_date
-        super().save(*args, **kwargs)
 
     pass

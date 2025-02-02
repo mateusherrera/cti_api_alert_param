@@ -19,11 +19,7 @@ from alert_param.models import (
 class ForumAdmin(admin.ModelAdmin):
     """ Configurações de administração para o modelo Forum. """
 
-    list_display = (
-        'id',
-        'forum_name'
-    )
-
+    list_display = [fields.name for fields in Forum._meta.fields]
     pass
 
 
@@ -31,11 +27,7 @@ class ForumAdmin(admin.ModelAdmin):
 class EmailAdmin(admin.ModelAdmin):
     """ Configurações de administração para o modelo Email. """
 
-    list_display = (
-        'id',
-        'email'
-    )
-
+    list_display = [fields.name for fields in Email._meta.fields]
     pass
 
 
@@ -43,19 +35,7 @@ class EmailAdmin(admin.ModelAdmin):
 class AlertAdmin(admin.ModelAdmin):
     """ Configurações de administração para o modelo Alert. """
 
-    list_display = (
-        'id',
-        'is_active',
-        'id_user',
-        'start_date',
-        'final_date',
-        'qte_frequency',
-        'type_frequency',
-        'is_relevant',
-        'last_run',
-        'run'
-    )
-
+    list_display = [fields.name for fields in Alert._meta.fields]
     pass
 
 
@@ -63,9 +43,5 @@ class AlertAdmin(admin.ModelAdmin):
 class KeywordAdmin(admin.ModelAdmin):
     """ Configurações de administração para o modelo Keyword. """
 
-    list_display = (
-        'id',
-        'word'
-    )
-
+    list_display = [fields.name for fields in Keyword._meta.fields]
     pass
