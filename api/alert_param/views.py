@@ -1,30 +1,25 @@
 """
 Módulo que define as views da aplicação alert_param.
 
-:author:        Mateus Herrera Gobetti Borges
-:github:        mateusherrera
-
-:created at:    2024-09-25
-:updated at:    2024-10-08
+:created by:    Mateus Herrera
+:created at:    2024-10-25
 """
 
-from permissions.mixins import PermissionsMixins
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import viewsets
 
-from .serializers import (
+from alert_param.serializers import (
     AlertSerializer,
-    KeywordSerializer,
     ForumSerializer,
     EmailSerializer,
+    KeywordSerializer,
 )
-
-from .models import (
+from alert_param.models import (
     Alert,
-    Keyword,
     Forum,
     Email,
+    Keyword,
 )
 
 

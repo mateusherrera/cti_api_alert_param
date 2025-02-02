@@ -1,11 +1,8 @@
 """
 Models para parametrização de alertas gerados no sistema de identificação de incidentes de cibersegurança (cti).
 
-:author:        Mateus Herrera Gobetti Borges
-:github:        mateusherrera
-
-:created at:    2024-09-25
-:updated at:    2024-10-29
+:created by:    Mateus Herrera
+:created at:    2024-10-25
 """
 
 from django.db import models

@@ -1,33 +1,18 @@
 """
 Cofigurações de administração do Django para o aplicativo alert_param.
 
-:author:        Mateus Herrera Gobetti Borges
-:github:        mateusherrera
-
-:created at:    2024-09-25
-:updated at:    2024-10-29
+:created by:    Mateus Herrera
+:created at:    2024-10-25
 """
 
 from django.contrib import admin
 
-from .models import (
+from alert_param.models import (
     Alert,
-    Keyword,
     Forum,
     Email,
+    Keyword,
 )
-
-
-@admin.register(Keyword)
-class KeywordAdmin(admin.ModelAdmin):
-    """ Configurações de administração para o modelo Keyword. """
-
-    list_display = (
-        'id',
-        'word'
-    )
-
-    pass
 
 
 @admin.register(Forum)
@@ -69,6 +54,18 @@ class AlertAdmin(admin.ModelAdmin):
         'is_relevant',
         'last_run',
         'run'
+    )
+
+    pass
+
+
+@admin.register(Keyword)
+class KeywordAdmin(admin.ModelAdmin):
+    """ Configurações de administração para o modelo Keyword. """
+
+    list_display = (
+        'id',
+        'word'
     )
 
     pass

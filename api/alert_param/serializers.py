@@ -1,39 +1,19 @@
 """
 Módulo que contém os serializadores dos models do app alert_param.
 
-:author:        Mateus Herrera Gobetti Borges
-:github:        mateusherrera
-
-:created at:    2024-09-25
-:updated at:    2024-10-29
+:created by:    Mateus Herrera
+:created at:    2024-10-25
 """
 
 from rest_framework import serializers
 from datetime import date, timedelta
 
-from .models import (
+from alert_param.models import (
     Alert,
-    Keyword,
     Forum,
     Email,
+    Keyword,
 )
-
-
-class KeywordSerializer(serializers.ModelSerializer):
-    """ Serializer para o model Keyword. """
-
-    class Meta:
-        """ Meta opções do serializer. """
-
-        model = Keyword
-        fields = (
-            'id',
-            'word',
-        )
-
-        pass
-
-    pass
 
 
 class ForumSerializer(serializers.ModelSerializer):
@@ -63,6 +43,23 @@ class EmailSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'email',
+        )
+
+        pass
+
+    pass
+
+
+class KeywordSerializer(serializers.ModelSerializer):
+    """ Serializer para o model Keyword. """
+
+    class Meta:
+        """ Meta opções do serializer. """
+
+        model = Keyword
+        fields = (
+            'id',
+            'word',
         )
 
         pass
@@ -125,7 +122,7 @@ class AlertSerializer(serializers.ModelSerializer):
             'type_frequency',
             'is_relevant',
 
-            # ini: elacionamentos
+            # ini: relacionamentos
             'keywords',
             'keyword_ids',
             'forums',
@@ -139,13 +136,13 @@ class AlertSerializer(serializers.ModelSerializer):
         )
 
         extra_kwargs = {
-            'keywords': { 'read_only': True },
-            'forums': { 'read_only': True },
-            'emails': { 'read_only': True },
+            'keywords'  : { 'read_only': True },
+            'forums'    : { 'read_only': True },
+            'emails'    : { 'read_only': True },
 
-            'keyword_ids': { 'write_only': True },
-            'forum_ids': { 'write_only': True },
-            'email_ids': { 'write_only': True },
+            'keyword_ids'   : { 'write_only': True },
+            'forum_ids'     : { 'write_only': True },
+            'email_ids'     : { 'write_only': True },
         }
 
         pass
