@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: cti_alerts_api
+    command: gunicorn cti.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./api:/api
+      - staticvolume:/api/staticfiles/
+      - mediavolume:/api/mediafiles/
+    expose:
+      - "8000"
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: cti_alerts_nginx
+    volumes:
+      - staticvolume:/api/staticfiles/
+      - mediavolume:/api/mediafiles/
+    ports:
+      - "8877:8877"
+    depends_on:
+      - api
+
+volumes:
+  staticvolume:
+  mediavolume:

@@ -144,10 +144,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-STATIC_URL = 'api/static/'
+STATIC_URL = '/api/static/'
 STATIC_ROOT = path.join(BASE_DIR, 'staticfiles')
-MEDIA_URL = 'api/media/'
-MEDIA_ROOT = path.join(BASE_DIR, 'media')
+
+MEDIA_URL = '/api/media/'
+MEDIA_ROOT = path.join(BASE_DIR, 'mediafiles')
 
 # Rest Framework
 REST_FRAMEWORK = {
