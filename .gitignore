@@ -163,3 +163,4 @@ cython_debug/
 
 # Static Files Django - For Docker
 staticfiles/
+mediafiles/
