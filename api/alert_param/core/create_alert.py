@@ -114,6 +114,9 @@ class CreateAlert:
         else:
             raise ValueError('Tipo de frequência inválido.')
 
+        if run > final_date:
+            raise ValueError('A primeira data de execução não pode ultrapassar a data final.')
+
         alert = Alert.objects.create(
             is_active       = True,
             id_user         = id_user,

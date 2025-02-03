@@ -63,6 +63,15 @@ class AlertSerializer(serializers.ModelSerializer):
 
         model = Alert
         fields = '__all__'
+        extra_kwargs = {
+            'id'            : { 'read_only': True },
+            'created_at'    : { 'read_only': True },
+            'updated_at'    : { 'read_only': True },
+            'is_active'     : { 'read_only': True },
+            'start_date'    : { 'read_only': True },
+            'last_run'      : { 'read_only': True },
+            'run'           : { 'read_only': True },
+        }
         pass
 
     pass
