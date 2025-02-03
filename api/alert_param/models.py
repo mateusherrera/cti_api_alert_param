@@ -6,6 +6,7 @@ Models para parametrização de alertas gerados no sistema de identificação de
 """
 
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 SCHEMA_NAME = 'alert_param"."'
@@ -107,9 +108,9 @@ class Email(Base):
 class Alert(Base):
     """ Model para armazenar parâmetros de perfis de alertas criados. """
 
-    keywords    = models.ForeignKey(Keyword, on_delete=models.CASCADE)
-    forums      = models.ForeignKey(Forum, on_delete=models.CASCADE)
-    emails      = models.ForeignKey(Email, on_delete=models.CASCADE)
+    forums      = models.ManyToManyField(Forum)
+    emails      = models.ManyToManyField(Email)
+    keywords    = models.ManyToManyField(Keyword)
 
     is_active       = models.BooleanField(default=True)
     id_user         = models.IntegerField()
@@ -118,8 +119,8 @@ class Alert(Base):
     qte_frequency   = models.IntegerField()
     type_frequency  = models.CharField(max_length=100)
     is_relevant     = models.FloatField(default=1.0, validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
-    last_run        = models.DateField(null=True, blank=True)
-    run             = models.DateField(null=True, blank=True)
+    last_run        = models.DateField()
+    run             = models.DateField()
 
     class Meta:
         """ Meta informações para a classe Alert. """

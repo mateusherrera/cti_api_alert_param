@@ -16,14 +16,14 @@ from alert_param.views import (
 
 
 # Recursos
-ALERTS = 'alerts'
-FORUMS = 'forums'
-EMAILS = 'emails'
-KEYWORDS = 'keywords'
+ALERTS      = 'alert'
+FORUMS      = 'forum'
+EMAILS      = 'email'
+KEYWORDS    = 'keyword'
 
 # Registra as views no roteador
 alert_param_router = SimpleRouter()
-alert_param_router.register(ALERTS, AlertViewSet)
-alert_param_router.register(FORUMS, ForumViewSet)
-alert_param_router.register(EMAILS, EmailViewSet)
-alert_param_router.register(KEYWORDS, KeywordViewSet)
+alert_param_router.register( ALERTS, AlertViewSet       )
+alert_param_router.register( FORUMS, ForumViewSet       )
+alert_param_router.register( EMAILS, EmailViewSet       )
+alert_param_router.register( KEYWORDS, KeywordViewSet   )
