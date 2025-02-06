@@ -10,8 +10,8 @@ services:
     command: gunicorn cti.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ./api:/api
-      - staticvolume:/api/staticfiles/
-      - mediavolume:/api/mediafiles/
+      - ./staticfiles:/api/staticfiles
+      - ./media:/api/media
     expose:
       - "8000"
 
@@ -37,14 +37,13 @@ services:
     env_file:
       - ./api/.env
     volumes:
-      - staticvolume:/api/staticfiles/
-      - mediavolume:/api/mediafiles/
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./staticfiles:/api/staticfiles
+      - ./media:/api/media
     ports:
       - "8877:8877"
     depends_on:
       - api
 
 volumes:
-  staticvolume:
-  mediavolume:
   postgres_data:

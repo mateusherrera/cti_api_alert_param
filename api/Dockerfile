@@ -19,5 +19,8 @@ RUN pip install --upgrade pip
 COPY . /api
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Coletando staticfiles
+RUN python manage.py collectstatic --noinput
+
 # Expor a porta 8000
 EXPOSE 8000
