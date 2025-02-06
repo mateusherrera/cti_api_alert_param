@@ -27,7 +27,10 @@ Dessa forma, o mecanismo de notificação é direcionado, garantindo que os usu�
     * [Gerando a `SECRET_KEY` do Django](#gerando-a-secret_key-do-django)
     * [Iniciando Docker](#iniciando-docker)
     * [Criando e instalando requirements (sem docker)](#criando-e-instalando-requirements-sem-docker)
-* [Tabelas](#tabelas)
+* [Autenticação](#autenticação)
+    * [Criando um superusuário](#criando-um-superusuário)
+    * [Acessando o painel administrativo](#acessando-o-painel-administrativo)
+    * [Autenticação nas requisições](#autenticação-nas-requisições)
 * [Endpoints](#endpoints)
 
 
@@ -136,8 +139,42 @@ Com o ambiente virtual ativado, instale as dependências necessárias usando o a
 
 ## Autenticação
 
+Para acessar e gerenciar usuários, permissões e grupos na API, utilize um superusuário no painel administrativo do Django.
 
-## Tabelas
+### Criando um superusuário
+
+Execute o seguinte comando no terminal para criar um superusuário no ambiente Docker:
+```sh
+docker-compose exec api python manage.py createsuperuser
+```
+
+Ou, apenas `python manage.py createsuperuser`, caso não estiver no container.
+
+Depois basta preencher os dados solicitados.
+
+### Acessando o painel administrativo
+
+Com a aplicação rodando (exemplo em localhost, porta 8877) acesse: http://localhost:8877/admin
+
+No painel, você pode:
+* Criar novos usuário;
+* Definir permissões;
+* Gerenciar acessos;
+* Manipular dados, entre outros.
+
+### Autenticação nas requisições
+
+A API utiliza **Basic Authentication**, onde as credenciais são os mesmos usuários cadastrados no Django Admin.
+
+Para autenticar, envie no **cabeçalho da requisição** o seguinte:
+```sh
+Authorization: Basic base64(usuario:senha)
+```
+
+Onde `base64(usuario:senha)` e o usuario e a senha convertido em base 64 no formato `usuario:senha`.
+
+* Exemplo:
+`curl -u usuario:senha http://localhost:8877/api/v1/endpoint/`
 
 
 ## Endpoints
