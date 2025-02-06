@@ -14,6 +14,6 @@ class ResponseMessages:
     ERROR_EMPTY_BODY            = 'O corpo da requisição está vazio.'
     ERROR_MISSING_FIELDS        = 'Parâmetro obrigatório não informado.'
     ERROR_GET_REQUEST           = 'Erro ao tentar obter a requisição.'
-    ERROR_INVALID_DATE          = 'Data Final inválida.'
+    ERROR_INVALID_DATE          = 'Data inválida.'
     ERROR_CREATE_ALERT          = 'Erro ao tentar criar alerta.'
     pass

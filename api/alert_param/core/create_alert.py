@@ -193,10 +193,27 @@ class CreateAlert:
             emails      = list(data['emails'])
 
             id_user         = int(data['id_user'])
+            start_date      = datetime.strptime(data['start_date'], '%Y-%m-%d').date()
             final_date      = datetime.strptime(data['final_date'], '%Y-%m-%d').date()
             qte_frequency   = int(data['qte_frequency'])
             type_frequency  = data['type_frequency']
             is_relevant     = float(data['is_relevant'])
+
+            if start_date > final_date:
+                return ResponseBuilder.build_response(
+                    ResponseMessages.ERROR_INVALID_DATE,
+
+                    error={
+                        'code'      : ResponseErrorCode.ERROR_START_DATE[0],
+                        'message'   : ResponseErrorCode.ERROR_START_DATE[1],
+                        'request'   : request.data or None,
+                    },
+                    http_status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            if start_date < timezone.now().astimezone(pytz.timezone('America/Sao_Paulo')).date():
+                start_date = timezone.now().astimezone(pytz.timezone('America/Sao_Paulo')).date()
+                start_date = datetime.strftime(start_date, '%Y-%m-%d').date()
 
             if final_date < timezone.now().astimezone(pytz.timezone('America/Sao_Paulo')).date():
                 return ResponseBuilder.build_response(

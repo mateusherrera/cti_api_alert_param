@@ -68,7 +68,6 @@ class AlertSerializer(serializers.ModelSerializer):
             'created_at'    : { 'read_only': True },
             'updated_at'    : { 'read_only': True },
             'is_active'     : { 'read_only': True },
-            'start_date'    : { 'read_only': True },
             'last_run'      : { 'read_only': True },
             'run'           : { 'read_only': True },
         }
