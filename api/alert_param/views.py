@@ -18,12 +18,14 @@ from alert_param.serializers import (
     ForumSerializer,
     EmailSerializer,
     KeywordSerializer,
+    PostAlertedSerializer,
 )
 from alert_param.models import (
     Alert,
     Forum,
     Email,
     Keyword,
+    PostAlerted,
 )
 
 
@@ -221,4 +223,12 @@ class AlertViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
+    pass
+
+
+class PostAlertedViewSet(viewsets.ModelViewSet):
+    """ ViewSet para o modelo PostAlerted. """
+
+    queryset = PostAlerted.objects.all()
+    serializer_class = PostAlertedSerializer
     pass

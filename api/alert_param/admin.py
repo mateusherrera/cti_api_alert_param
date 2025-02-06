@@ -12,6 +12,7 @@ from alert_param.models import (
     Forum,
     Email,
     Keyword,
+    PostAlerted,
 )
 
 
@@ -44,4 +45,12 @@ class KeywordAdmin(admin.ModelAdmin):
     """ Configurações de administração para o modelo Keyword. """
 
     list_display = [fields.name for fields in Keyword._meta.fields]
+    pass
+
+
+@admin.register(PostAlerted)
+class PostAlertedAdmin(admin.ModelAdmin):
+    """ Configurações de administração para o modelo PostAlerted. """
+
+    list_display = [fields.name for fields in PostAlerted._meta.fields]
     pass

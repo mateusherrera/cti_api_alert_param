@@ -142,3 +142,35 @@ class Alert(Base):
         return f'Perfil de alerta criado pelo usuário com identificador: {self.id_user}'
 
     pass
+
+
+class PostAlerted(Base):
+    """ Model para armazenar alertas gerados pelo sistema. """
+
+    id_post = models.IntegerField()
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    alert = models.ForeignKey(Alert, on_delete=models.CASCADE)
+    forum = models.ForeignKey(Forum, on_delete=models.CASCADE)
+    keywords_found = models.ManyToManyField(Keyword)
+    relevance = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
+
+    class Meta:
+        """ Meta informações para a classe GeneratedAlert. """
+
+        db_table = f'{SCHEMA_NAME}generated_alert'
+
+        verbose_name = 'Post Alerted'
+        verbose_name_plural = 'Posts Alerted'
+        pass
+
+    def __str__(self):
+        """
+        Retorna uma representação em string do objeto GeneratedAlert.
+
+        :return: Representação em string do objeto GeneratedAlert.
+        """
+
+        return f'ID: {self.id} - Título: {self.title}'
+
+    pass

@@ -13,6 +13,7 @@ from alert_param.models import (
     Forum,
     Email,
     Keyword,
+    PostAlerted,
 )
 
 
@@ -71,6 +72,19 @@ class AlertSerializer(serializers.ModelSerializer):
             'last_run'      : { 'read_only': True },
             'run'           : { 'read_only': True },
         }
+        pass
+
+    pass
+
+
+class PostAlertedSerializer(serializers.ModelSerializer):
+    """ Serializer para o model PostAlerted. """
+
+    class Meta:
+        """ Meta opções do serializer. """
+
+        model = PostAlerted
+        fields = '__all__'
         pass
 
     pass
