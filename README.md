@@ -1,99 +1,143 @@
 # API para Parametrização de Gerador de Alertas
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&labelColor=11111b&color=B5E8E0&logoColor=e0e0e0)
-![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&labelColor=11111b&color=B5E8E0&logoColor=e0e0e0)
-![DjangoREST](https://img.shields.io/badge/DJANGO-REST-ff1709?style=for-the-badge&logo=django&labelColor=11111b&color=B5E8E0&logoColor=e0e0e0)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&labelColor=11111b&color=B5E8E0&logoColor=e0e0e0)&nbsp;
+![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&labelColor=11111b&color=B5E8E0&logoColor=e0e0e0)&nbsp;
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&labelColor=11111b&color=B5E8E0&logoColor=e0e0e0)&nbsp;
+![Postgre](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&labelColor=11111b&color=B5E8E0&logoColor=e0e0e0)&nbsp;
+![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&labelColor=11111b&color=B5E8E0&logoColor=e0e0e0)&nbsp;
+![DjangoREST](https://img.shields.io/badge/DJANGO-REST-ff1709?style=for-the-badge&logo=django&labelColor=11111b&color=B5E8E0&logoColor=e0e0e0)&nbsp;
 
-Application Programming Interface (API) desenvolvida em Django REST Framework que é responsável pela parametrização de perfis de alerta para um sistema de notificação de inteligência contra ameaças cibernéticas (Cyber Threat Intelligence). O sistema monitora postagens colhidas de fóruns da surface e dark web, analisando essas informações para identificar potenciais ameaças. A API permite que os usuários configurem perfis de alerta personalizados, definindo critérios como palavras-chave, origem das postagens e nível de criticidade, assegurando que as notificações sejam direcionadas de forma eficiente.
+
+Esta API, desenvolvida com **Django REST Framework (DRF)**, permite a **configuração de perfis de alerta** para um sistema de **inteligência contra ameaças cibernéticas (Cyber Threat Intelligence - CTI)**.
+
+O sistema monitora, com a frequência definida no próprio perfil de alerta, postagens coletadas de fóruns da **surface web** e **dark web**, analisando essas informações para identificar **potenciais ameaças**. A API possibilita que os usuários definam critérios personalizados para os alertas, incluindo:
+
+* **Palavras-chave** encontradas nos post analisados, desde o último alerta;
+* **Origem das postagens**, podendo ser de fóruns da **surface web** e/ou **dark web**;
+* **Relevância** da ameaça detectada na postagem.
+
+Dessa forma, o mecanismo de notificação é direcionado, garantindo que os usuários recebam **alertas relevantes e adaptados às suas necessidades**.
+
 
 ## Sumário
 
-* [Visão Geral](#visao-geral)
-* [Pacotes](#pacotes)
-* [Ambiente de Desenvolvimento](#env-dev)
-* [Autenticação](#autenticacao)
-    * [Refresh Token](#refresh)
-    * [Access Token](#access)
+* [Visão Geral](#visão-geral)
+* [Preparando ambiente](#preparando-ambiente)
+    * [Instalação do Docker](#instalação-do-docker)
+    * [Configuração das variáveis de ambiente](#configuração-das-variáveis-de-ambiente)
+    * [Gerando a `SECRET_KEY` do Django](#gerando-a-secret_key-do-django)
+    * [Iniciando Docker](#iniciando-docker)
+    * [Criando e instalando requirements (sem docker)](#criando-e-instalando-requirements-sem-docker)
 * [Tabelas](#tabelas)
 * [Endpoints](#endpoints)
 
 
-<a id="visao-geral"></a>
-
 ## Visão Geral
 
-A API tem como objetivo permitir a criação de perfis personalizados para a geração de alertas de ameaças cibernéticas com base em configurações definidas pelos usuários. Esses perfis possibilitam a definição de critérios como palavras-chave, fonte das postagens e percentual de relevância em relação à ameaça cibernética (esse valor é calculado por outra parte do projeto). Dessa forma, o sistema garante que os alertas emitidos sejam ajustados conforme as necessidades específicas, oferecendo maior precisão e eficiência no monitoramento de potenciais riscos cibernéticos.
+A API permite a criação de **perfis personalizados** para a geração de **alertas de ameaças cibernéticas**, com base em configurações definidas pelos usuários. Cada perfil possibilita a especificação de critérios como **palavras-chave**, **fonte das postagens** e **percentual de relevância da ameaça** (percentual calculado pelo modelo treinado nas outras partes do projeto).
+
+Dessa forma, o sistema assegura que os alertas emitidos sejam **precisos e adaptados às necessidades específicas de cada usuário**, aumentando a eficiência no monitoramento e na detecção de potenciais riscos cibernéticos.
 
 
-<a id="pacotes"></a>
+## Preparando ambiente
+### Instalação do Docker
 
-## Pacotes
+O primeiro passo e instalar e configurar o Docker.
+* No Windows, siga as instruções para configurar o Docker com WSL 2: [Docker com WSL 2](https://docs.docker.com/desktop/features/wsl/#turn-on-docker-desktop-wsl-2)
+* No Ubuntu, siga as instruções para instalar o Docker de maneira oficial: [Docker no Ubuntu](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository).
 
-A base para o desenvolvimento da API foi o Django REST Framework, os demais pacotes estão listados em `requirements.txt`.
-
-Pacotes necessários para rodar o código no Linux (Ubuntu):
-
+No Ubuntu, instale também o `docker-compose`:
 ```sh
-sudo apt-get update
-sudo apt-get install python3 python3-dev python3-venv python3-pip
+sudo apt-get install docker-compose -y
 ```
 
+Além disso, lembre de adicionar ser usuário ao grupo do Docker:
+```sh
+sudo usermod -aG docker $USER
+```
 
-<a id="env-dev"></a>
+Para verificar se a alteração foi aplicada corretamente, execute:
+```sh
+groups $USER
+```
 
-## Ambiente de Desenvolvimento
+### Configuração das variáveis de ambiente
 
-Para preparar o ambiente Python para desenvolvimeto siga os passos a seguir:
+Agora, é necessário definir algumas variáveis de ambiente para o funcionamento da API.
 
-1. Criar arquivo `.env`, com definição do tipo de ambiente (produção ou desenvolvimento) e credenciais de banco de dados:
+Na pasta `api/` crie um arquivo `.env` e adicione o seguinte conteúdo:
+obs: É necessário remover os comentário apos as variáveis (os que estão marcados com `*` no início)
 
 ```sh
 # Ambiente
-ENV='development'
-SECRET_KEY='secret_key_para_o_django'
+ENV                     ='dev' # * Opções: 'dev' ou 'prod'
+SECRET_KEY              ='chave_gerada_pelo/para_django'
+ALLOWED_HOSTS           ='hosts,separados,por,virgula'
+CORS_ORIGIN_WHITELIST   ='cors,separados,por,vírgula'
 
-# JWT
-JWT_SECRET_KEY='secret_key_para_o_simple_jwt'
-
-# Database - Produção
-DB_PROD_NAME='nome_do_db'
-DB_PROD_USER='user_do_db'
-DB_PROD_PSWD='senha_do_db'
-DB_PROD_HOST='host_do_db'
-DB_PROD_PORT='porta_do_db'
-
-# Database - Desenvolvimento
-DB_DEV_NAME='nome_do_db'
-DB_DEV_USER='user_do_db'
-DB_DEV_PSWD='senha_do_db'
-DB_DEV_HOST='host_do_db'
-DB_DEV_PORT='porta_do_db'
+# Database
+POSTGRES_DB         = 'nome_do_database' # * Criado automaticamente pelo docker-compose
+POSTGRES_HOST       = 'db' # * Nome do container do PostgreSQL no docker-compose
+POSTGRES_PORT       = 'porta_do_banco'
+POSTGRES_USER       = 'usuario_para_db' # * Criado automaticamente pelo docker-compose
+POSTGRES_PASSWORD   = 'senha_para_usario' # * Criado automaticamente pelo docker-compose
 ```
 
+### Gerando a `SECRET_KEY` do Django
 
-<a id="autenticacao"></a>
+Para gerar uma chave segura, execute o seguinte comando Python (obs: com o Django instalado)
+
+```python
+from django.core.management.utils import get_random_secret_key
+print(get_random_secret_key())
+```
+
+Copie o valor gerado e substitua `chave_gerada_pelo/para_django` no arquivo `.env`.
+
+### Iniciando Docker
+
+Com tudo configurado, inicie os serviços do Docker:
+```sh
+docker-compose up -d
+```
+
+Reiniciando container após alterações no código:
+```sh
+docker-compose restart nome_do_container
+```
+
+Se precisar recriar os container
+```sh
+docker-compose down
+docker-compose up -d
+```
+
+Para remover todas as imagens do Docker:
+```sh
+docker-compose down --rmi all
+```
+
+### Criando e instalando requirements (sem docker)
+
+Para rodar o projeto localmente sem utilizar Docker, siga os passos abaixo para configurar o ambiente virtual e instalar as dependências do projeto.
+
+#### Criando um ambiente virtual
+
+No terminal, navegue até o diretório do projeto e crie um ambiente vitual python.
+No Windows `python -m venv venv`. No Linux `python3 -m venv venv`.
+
+#### Ativando o ambiente virtual
+
+No Windows `.\venv\Scripts\activate`. No Linux `source venv/bin/activate`.
+
+#### Instalando dependências
+
+Com o ambiente virtual ativado, instale as dependências necessárias usando o arquivo `requirements.txt` (na pasta `api/`), com o comando: `pip install -r requirements.txt`.
+
 
 ## Autenticação
 
-A autenticação na API será baseada no uso de JSON Web Tokens (JWT). O processo começa quando o usuário, previamente cadastrado e com as permissões apropriadas, envia suas credenciais para a API. Em resposta, a API gera dois tokens: um Access Token e um Refresh Token. O Access Token concede acesso temporário a recursos protegidos, enquanto o Refresh Token é utilizado para renovar o Access Token sem a necessidade de um novo login, facilitando o gerenciamento de sessões.
-
-<a id="refresh"></a>
-
-### Refresh Token
-
-O Refresh Token tem um tempo de vida mais longo em comparação ao Access Token e é usado exclusivamente para gerar novos Access Tokens quando este expira. Enquanto o Refresh Token estiver válido, ele permite que o usuário continue autenticado sem precisar submeter suas credenciais novamente. Esse token é ideal para manter sessões de usuário ativas por períodos prolongados, garantindo uma experiência de uso contínua e segura.
-
-<a id="access"></a>
-
-### Access Token
-
-O Access Token tem um tempo de vida curto e é utilizado para acessar recursos específicos da API que requerem autenticação. Cada requisição a esses endpoints protegidos deve incluir o Access Token no cabeçalho de autorização. Esse token garante que apenas usuários autenticados e autorizados possam realizar operações nos recursos sensíveis da API. Quando o Access Token expira, o cliente pode solicitar um novo usando o Refresh Token.
-
-
-<a id="tabelas"></a>
 
 ## Tabelas
 
-
-<a id="endpoints"></a>
 
 ## Endpoints
