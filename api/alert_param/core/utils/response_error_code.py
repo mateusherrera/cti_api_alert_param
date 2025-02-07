@@ -18,4 +18,9 @@ class ResponseErrorCode:
     ERROR_ADD_KEYWORD                   = ( 7, 'Erro ao tentar adicionar palavra-chave.'            )
     ERROR_ADD_FORUM                     = ( 8, 'Erro ao tentar adicionar fórum.'                    )
     ERROR_ADD_EMAIL                     = ( 9, 'Erro ao tentar adicionar e-mail.'                   )
+
+    ERROR_LIST_ALERTS                   = (10, 'Erro ao tentar listar alertas.'                     )
+    ERROR_LIST_ALERTS_BY_USER           = (11, 'Erro ao tentar listar alertas por usuário.'         )
+    ERROR_LIST_ACTIVE_ALERTS_BY_USER    = (12, 'Erro ao tentar listar alertas ativos por usuário.'  )
+    ERROR_LIST_RUN_TODAY                = (13, 'Erro ao tentar listar alertas que deve rodar hoje.' )
     pass

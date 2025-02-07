@@ -10,9 +10,15 @@ TODO: Melhorar retornos de metodos de alertas
 import datetime
 
 from django.utils import timezone
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+
+
+from alert_param.core.utils.response_builder import ResponseBuilder
+from alert_param.core.utils.response_messages import ResponseMessages
+from alert_param.core.utils.response_error_code import ResponseErrorCode
 
 from alert_param.core.create_alert import CreateAlert
 from alert_param.serializers import (
@@ -83,24 +89,6 @@ class AlertViewSet(viewsets.ModelViewSet):
 
         return CreateAlert().create(request)
 
-    def list(self, request, *args, **kwargs):
-        """
-        Sobrescreve o método list para incluir campos adicionais nos relacionamentos ManyToMany.
-
-        :param request: Requisição HTTP.
-        :return:        Resposta HTTP contendo a lista de alertas com campos adicionais.
-        """
-        
-        alerts = Alert.objects.all()
-        data = []
-        for alert in alerts:
-            alert_data = AlertSerializer(alert, context={'request': request}).data
-            alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
-            alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
-            alert_data['emails'] = [email.email for email in alert.emails.all()]
-            data.append(alert_data)
-        return Response(data)
-
     @action(detail=True, methods=['get'], url_path='update/run')
     def update_run(self, request, pk=None):
         """
@@ -147,6 +135,41 @@ class AlertViewSet(viewsets.ModelViewSet):
 
     pass
 
+    def list(self, request, *args, **kwargs):
+        """
+        Sobrescreve o método list para incluir campos adicionais nos relacionamentos ManyToMany.
+
+        :param request: Requisição HTTP.
+        :return:        Resposta HTTP contendo a lista de alertas com campos adicionais.
+        """
+        
+        alerts = Alert.objects.all()
+        data = []
+
+        try:
+            for alert in alerts:
+                alert_data = AlertSerializer(alert, context={'request': request}).data
+                alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
+                alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
+                alert_data['emails'] = [email.email for email in alert.emails.all()]
+                data.append(alert_data)
+
+        except Exception as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_LIST_ALERTS,
+                error={
+                    'code': ResponseErrorCode.ERROR_LIST_ALERTS[0],
+                    'message': ResponseErrorCode.ERROR_LIST_ALERTS[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        return ResponseBuilder.build_response(
+            ResponseMessages.LIST_ALERTS,
+            data=data
+        )
+
     @action(detail=False, methods=['get'], url_path='user/(?P<id_user>[^/.]+)')
     def get_alerts_by_user(self, request, id_user=None):
         """
@@ -158,16 +181,31 @@ class AlertViewSet(viewsets.ModelViewSet):
         """
 
         alerts = Alert.objects.filter(id_user=id_user)
-        
         data = []
-        for alert in alerts:
-            alert_data = AlertSerializer(alert, context={'request': request}).data
-            alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
-            alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
-            alert_data['emails'] = [email.email for email in alert.emails.all()]
-            data.append(alert_data)
-        
-        return Response(data)
+
+        try:
+            for alert in alerts:
+                alert_data = AlertSerializer(alert, context={'request': request}).data
+                alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
+                alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
+                alert_data['emails'] = [email.email for email in alert.emails.all()]
+                data.append(alert_data)
+
+        except Exception as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_LIST_ALERTS,
+                error={
+                    'code': ResponseErrorCode.ERROR_LIST_ALERTS_BY_USER[0],
+                    'message': ResponseErrorCode.ERROR_LIST_ALERTS_BY_USER[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_500_INTERNAL_SERVER
+            )
+
+        return ResponseBuilder.build_response(
+            ResponseMessages.LIST_ALERTS,
+            data=data
+        )
 
     @action(detail=False, methods=['get'], url_path='active/user/(?P<id_user>[^/.]+)')
     def get_active_alerts_by_user(self, request, id_user=None):
@@ -180,16 +218,31 @@ class AlertViewSet(viewsets.ModelViewSet):
         """
 
         active_alerts = Alert.objects.filter(id_user=id_user, is_active=True)
-        
         data = []
-        for alert in active_alerts:
-            alert_data = AlertSerializer(alert, context={'request': request}).data
-            alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
-            alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
-            alert_data['emails'] = [email.email for email in alert.emails.all()]
-            data.append(alert_data)
-        
-        return Response(data)
+
+        try:
+            for alert in active_alerts:
+                alert_data = AlertSerializer(alert, context={'request': request}).data
+                alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
+                alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
+                alert_data['emails'] = [email.email for email in alert.emails.all()]
+                data.append(alert_data)
+
+        except Exception as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_LIST_ALERTS,
+                error={
+                    'code': ResponseErrorCode.ERROR_LIST_ACTIVE_ALERTS_BY_USER[0],
+                    'message': ResponseErrorCode.ERROR_LIST_ACTIVE_ALERTS_BY_USER[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_500_INTERNAL_SERVER
+            )
+
+        return ResponseBuilder.build_response(
+            ResponseMessages.LIST_ALERTS,
+            data=data
+        )
 
     @action(detail=False, methods=['get'], url_path='run/today')
     def get_active_alerts_run_today(self, request):
@@ -202,16 +255,31 @@ class AlertViewSet(viewsets.ModelViewSet):
 
         today = datetime.date.today()
         active_alerts = Alert.objects.filter(run=today, is_active=True)
-        
         data = []
-        for alert in active_alerts:
-            alert_data = AlertSerializer(alert, context={'request': request}).data
-            alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
-            alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
-            alert_data['emails'] = [email.email for email in alert.emails.all()]
-            data.append(alert_data)
-        
-        return Response(data)
+
+        try:
+            for alert in active_alerts:
+                alert_data = AlertSerializer(alert, context={'request': request}).data
+                alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
+                alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
+                alert_data['emails'] = [email.email for email in alert.emails.all()]
+                data.append(alert_data)
+
+        except Exception as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_LIST_ALERTS,
+                error={
+                    'code': ResponseErrorCode.ERROR_LIST_RUN_TODAY[0],
+                    'message': ResponseErrorCode.ERROR_LIST_RUN_TODAY[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_500_INTERNAL_SERVER
+            )
+
+        return ResponseBuilder.build_response(
+            ResponseMessages.LIST_ALERTS,
+            data=data
+        )
 
 
 class PostAlertedViewSet(viewsets.ModelViewSet):

@@ -16,4 +16,8 @@ class ResponseMessages:
     ERROR_GET_REQUEST           = 'Erro ao tentar obter a requisição.'
     ERROR_INVALID_DATE          = 'Data inválida.'
     ERROR_CREATE_ALERT          = 'Erro ao tentar criar alerta.'
+
+    
+    LIST_ALERTS                 = 'Alertas listados com sucesso.'
+    ERROR_LIST_ALERTS           = 'Erro ao tentar listar alertas.'
     pass
