@@ -19,5 +19,11 @@ class ResponseMessages:
 
     
     LIST_ALERTS                 = 'Alertas listados com sucesso.'
+
     ERROR_LIST_ALERTS           = 'Erro ao tentar listar alertas.'
+
+    ALERT_INACTIVE              = 'Alerta foi inativado.'
+    ALERT_RUN_UPDATED           = 'Próximo dia a rodar alerta atualizado com sucesso.'
+
+    ERROR_ALERT_UPDATE_RUN      = 'Erro ao tentar atualizar próximo dia a rodar alerta.'
     pass

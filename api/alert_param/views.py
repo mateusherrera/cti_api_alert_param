@@ -9,7 +9,6 @@ TODO: Melhorar retornos de metodos de alertas
 
 import datetime
 
-from django.utils import timezone
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -20,6 +19,7 @@ from alert_param.core.utils.response_builder import ResponseBuilder
 from alert_param.core.utils.response_messages import ResponseMessages
 from alert_param.core.utils.response_error_code import ResponseErrorCode
 
+from alert_param.core.update_alert import UpdateAlert
 from alert_param.core.create_alert import CreateAlert
 from alert_param.serializers import (
     AlertSerializer,
@@ -98,42 +98,9 @@ class AlertViewSet(viewsets.ModelViewSet):
         :param pk:      Chave primária do alerta.
         :return:        Resposta HTTP contendo o alerta atualizado.
         """
-        alert = self.get_object()
 
-        last_run    = alert.run
-        final_date  = alert.final_date
-
-        if last_run >= final_date:
-            alert.is_active = False
-            alert.save()
-
-            serializer = AlertSerializer(alert, context={'request': request})
-            return Response(serializer.data)
-
-        next_run = alert.run
-        qte_frequency = alert.qte_frequency
-        type_frequency = alert.type_frequency
-
-        if type_frequency == 'days':
-            next_run += datetime.timedelta(days=qte_frequency)
-        elif type_frequency == 'weeks':
-            next_run += datetime.timedelta(weeks=qte_frequency)
-        elif type_frequency == 'months':
-            next_run += datetime.timedelta(months=qte_frequency)
-        elif type_frequency == 'years':
-            next_run += datetime.timedelta(years=qte_frequency)
-
-        if next_run > final_date:
-            next_run = final_date
-
-        alert.last_run = last_run
-        alert.run = next_run
-        alert.save()
-
-        serializer = AlertSerializer(alert, context={'request': request})
-        return Response(serializer.data)
-
-    pass
+        alert = Alert.objects.get(pk=pk)
+        return UpdateAlert().update_run(request, alert)
 
     def list(self, request, *args, **kwargs):
         """
@@ -149,9 +116,7 @@ class AlertViewSet(viewsets.ModelViewSet):
         try:
             for alert in alerts:
                 alert_data = AlertSerializer(alert, context={'request': request}).data
-                alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
-                alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
-                alert_data['emails'] = [email.email for email in alert.emails.all()]
+                alert_data = UpdateAlert.get_ntn_fields(alert, alert_data)
                 data.append(alert_data)
 
         except Exception as err:
@@ -186,9 +151,7 @@ class AlertViewSet(viewsets.ModelViewSet):
         try:
             for alert in alerts:
                 alert_data = AlertSerializer(alert, context={'request': request}).data
-                alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
-                alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
-                alert_data['emails'] = [email.email for email in alert.emails.all()]
+                alert_data = UpdateAlert.get_ntn_fields(alert, alert_data)
                 data.append(alert_data)
 
         except Exception as err:
@@ -223,9 +186,7 @@ class AlertViewSet(viewsets.ModelViewSet):
         try:
             for alert in active_alerts:
                 alert_data = AlertSerializer(alert, context={'request': request}).data
-                alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
-                alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
-                alert_data['emails'] = [email.email for email in alert.emails.all()]
+                alert_data = UpdateAlert.get_ntn_fields(alert, alert_data)
                 data.append(alert_data)
 
         except Exception as err:
@@ -260,9 +221,7 @@ class AlertViewSet(viewsets.ModelViewSet):
         try:
             for alert in active_alerts:
                 alert_data = AlertSerializer(alert, context={'request': request}).data
-                alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
-                alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
-                alert_data['emails'] = [email.email for email in alert.emails.all()]
+                alert_data = UpdateAlert.get_ntn_fields(alert, alert_data)
                 data.append(alert_data)
 
         except Exception as err:
@@ -280,6 +239,8 @@ class AlertViewSet(viewsets.ModelViewSet):
             ResponseMessages.LIST_ALERTS,
             data=data
         )
+
+    pass
 
 
 class PostAlertedViewSet(viewsets.ModelViewSet):
