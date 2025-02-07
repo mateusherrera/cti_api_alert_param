@@ -147,13 +147,14 @@ class Alert(Base):
 class PostAlerted(Base):
     """ Model para armazenar alertas gerados pelo sistema. """
 
-    id_post = models.IntegerField()
-    title = models.CharField(max_length=100)
-    description = models.TextField()
-    alert = models.ForeignKey(Alert, on_delete=models.CASCADE)
-    forum = models.ForeignKey(Forum, on_delete=models.CASCADE)
-    keywords_found = models.ManyToManyField(Keyword)
-    relevance = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
+    id_post         = models.IntegerField()
+    title           = models.CharField(max_length=100)
+    description     = models.TextField()
+    alert           = models.ForeignKey(Alert, on_delete=models.CASCADE)
+    forum           = models.ForeignKey(Forum, on_delete=models.CASCADE)
+    keywords_found  = models.ManyToManyField(Keyword)
+    relevance       = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
+    date            = models.DateField()
 
     class Meta:
         """ Meta informações para a classe GeneratedAlert. """

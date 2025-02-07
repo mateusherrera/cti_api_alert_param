@@ -197,7 +197,8 @@ class AlertViewSet(viewsets.ModelViewSet):
         :return:        Resposta HTTP contendo os alertas com 'run' igual à data de hoje.
         """
 
-        today = date.today()
+        sao_paulo_tz = pytz.timezone('America/Sao_Paulo')
+        today = timezone.now().astimezone(sao_paulo_tz).date()
         alerts = Alert.objects.filter(run=today)
         serializer = AlertSerializer(
             alerts,
