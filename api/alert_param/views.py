@@ -1,15 +1,14 @@
 """
 Módulo que define as views da aplicação alert_param.
 
-    TODO: Alterar retornos para se adequar aos response_builders.
+TODO: Melhorar retornos de metodos de alertas
 
 :created by:    Mateus Herrera
 :created at:    2024-10-25
 """
 
-import pytz
+import datetime
 
-from datetime import date
 from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -84,150 +83,25 @@ class AlertViewSet(viewsets.ModelViewSet):
 
         return CreateAlert().create(request)
 
-    @action(detail=False, methods=['get'], url_path='active')
-    def get_active_alerts(self, request):
+    def list(self, request, *args, **kwargs):
         """
-        Retorna os alertas que estão ativos.
+        Sobrescreve o método list para incluir campos adicionais nos relacionamentos ManyToMany.
 
         :param request: Requisição HTTP.
-        :return:        Resposta HTTP contendo os alertas ativos.
+        :return:        Resposta HTTP contendo a lista de alertas com campos adicionais.
         """
+        
+        alerts = Alert.objects.all()
+        data = []
+        for alert in alerts:
+            alert_data = AlertSerializer(alert, context={'request': request}).data
+            alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
+            alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
+            alert_data['emails'] = [email.email for email in alert.emails.all()]
+            data.append(alert_data)
+        return Response(data)
 
-        active_alerts = Alert.objects.filter(is_active=True)
-        serializer = AlertSerializer(
-            active_alerts,
-            many=True,
-            context={ 'request': request }
-        )
-
-        return Response(serializer.data)
-
-    @action(detail=False, methods=['get'], url_path='user/(?P<id_user>[^/.]+)')
-    def get_alerts_by_user(self, request, id_user=None):
-        """
-        Retorna os alertas associados a um determinado id_user.
-
-        :param request: Requisição HTTP.
-        :param id_user: ID do usuário cujos alertas serão filtrados.
-        :return:        Resposta HTTP contendo os alertas do usuário.
-        """
-
-        alerts = Alert.objects.filter(id_user=id_user)
-        serializer = AlertSerializer(
-            alerts,
-            many=True,
-            context={ 'request': request }
-        )
-
-        return Response(serializer.data)
-
-    @action(detail=False, methods=['get'], url_path='active/user/(?P<id_user>[^/.]+)')
-    def get_active_alerts_by_user(self, request, id_user=None):
-        """
-        Retorna os alertas ativos associados a um determinado id_user.
-
-        :param request: Requisição HTTP.
-        :param id_user: ID do usuário cujos alertas ativos serão filtrados.
-        :return:        Resposta HTTP contendo os alertas ativos do usuário.
-        """
-
-        active_alerts = Alert.objects.filter(id_user=id_user, is_active=True)
-        serializer = AlertSerializer(
-            active_alerts,
-            many=True,
-            context={ 'request': request }
-        )
-
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['get'], url_path='keywords')
-    def get_keywords(self, request, pk=None):
-        """
-        Retorna os keywords associados ao alerta.
-
-        :param request: Requisição HTTP.
-        :param pk:      Chave primária do alerta.
-        :return:        Resposta HTTP contendo os keywords associados ao alerta.
-        """
-
-        alert = self.get_object()
-        keywords = alert.keywords.all()
-        serializer = KeywordSerializer(keywords, many=True)
-
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['get'], url_path='forums')
-    def get_forums(self, request, pk=None):
-        """
-        Retorna os fóruns associados ao alerta.
-
-        :param request: Requisição HTTP.
-        :param pk:      Chave primária do alerta.
-        :return:        Resposta HTTP contendo os fóruns associados ao alerta.
-        """
-
-        alert = self.get_object()
-        forums = alert.forums.all()
-        serializer = ForumSerializer(forums, many=True)
-
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['get'], url_path='emails')
-    def get_emails(self, request, pk=None):
-        """
-        Retorna os emails associados ao alerta.
-
-        :param request: Requisição HTTP.
-        :param pk:      Chave primária do alerta.
-        :return:        Resposta HTTP contendo os emails associados ao alerta.
-        """
-
-        alert = self.get_object()
-        emails = alert.emails.all()
-        serializer = EmailSerializer(emails, many=True)
-
-        return Response(serializer.data)
-
-    @action(detail=False, methods=['get'], url_path='run/today')
-    def get_alerts_run_today(self, request):
-        """
-        Retorna os alertas cujo campo 'run' é igual à data de hoje.
-
-        :param request: Requisição HTTP.
-        :return:        Resposta HTTP contendo os alertas com 'run' igual à data de hoje.
-        """
-
-        sao_paulo_tz = pytz.timezone('America/Sao_Paulo')
-        today = timezone.now().astimezone(sao_paulo_tz).date()
-        alerts = Alert.objects.filter(run=today)
-        serializer = AlertSerializer(
-            alerts,
-            many=True,
-            context={ 'request': request }
-        )
-
-        return Response(serializer.data)
-
-    @action(detail=False, methods=['get'], url_path='run/today/active')
-    def get_active_alerts_run_today(self, request):
-        """
-        Retorna os alertas ativos cujo campo 'run' é igual à data de hoje.
-
-        :param request: Requisição HTTP.
-        :return:        Resposta HTTP contendo os alertas ativos com 'run' igual à data de hoje.
-        """
-
-        today = date.today()
-        active_alerts = Alert.objects.filter(run=today, is_active=True)
-        serializer = AlertSerializer(
-            active_alerts,
-            many=True,
-            context={ 'request': request }
-        )
-
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['post'], url_path='update-run')
+    @action(detail=True, methods=['get'], url_path='update/run')
     def update_run(self, request, pk=None):
         """
         Atualiza o campo 'run' do alerta para a próxima data com base na frequência.
@@ -237,10 +111,9 @@ class AlertViewSet(viewsets.ModelViewSet):
         :return:        Resposta HTTP contendo o alerta atualizado.
         """
         alert = self.get_object()
-        sao_paulo_tz = pytz.timezone('America/Sao_Paulo')
 
-        last_run    = alert.run.astimezone(sao_paulo_tz).date()
-        final_date  = alert.final_date.astimezone(sao_paulo_tz).date()
+        last_run    = alert.run
+        final_date  = alert.final_date
 
         if last_run >= final_date:
             alert.is_active = False
@@ -249,18 +122,18 @@ class AlertViewSet(viewsets.ModelViewSet):
             serializer = AlertSerializer(alert, context={'request': request})
             return Response(serializer.data)
 
-        next_run = alert.run.astimezone(sao_paulo_tz).date()
-        qtde_frequency = alert.qtde_frequency
+        next_run = alert.run
+        qte_frequency = alert.qte_frequency
         type_frequency = alert.type_frequency
 
         if type_frequency == 'days':
-            next_run += timezone.timedelta(days=qtde_frequency)
+            next_run += datetime.timedelta(days=qte_frequency)
         elif type_frequency == 'weeks':
-            next_run += timezone.timedelta(weeks=qtde_frequency)
+            next_run += datetime.timedelta(weeks=qte_frequency)
         elif type_frequency == 'months':
-            next_run += timezone.timedelta(months=qtde_frequency)
+            next_run += datetime.timedelta(months=qte_frequency)
         elif type_frequency == 'years':
-            next_run += timezone.timedelta(years=qtde_frequency)
+            next_run += datetime.timedelta(years=qte_frequency)
 
         if next_run > final_date:
             next_run = final_date
@@ -273,6 +146,72 @@ class AlertViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     pass
+
+    @action(detail=False, methods=['get'], url_path='user/(?P<id_user>[^/.]+)')
+    def get_alerts_by_user(self, request, id_user=None):
+        """
+        Retorna os alertas associados a um determinado id_user.
+
+        :param request: Requisição HTTP.
+        :param id_user: ID do usuário cujos alertas serão filtrados.
+        :return:        Resposta HTTP contendo os alertas do usuário.
+        """
+
+        alerts = Alert.objects.filter(id_user=id_user)
+        
+        data = []
+        for alert in alerts:
+            alert_data = AlertSerializer(alert, context={'request': request}).data
+            alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
+            alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
+            alert_data['emails'] = [email.email for email in alert.emails.all()]
+            data.append(alert_data)
+        
+        return Response(data)
+
+    @action(detail=False, methods=['get'], url_path='active/user/(?P<id_user>[^/.]+)')
+    def get_active_alerts_by_user(self, request, id_user=None):
+        """
+        Retorna os alertas ativos associados a um determinado id_user.
+
+        :param request: Requisição HTTP.
+        :param id_user: ID do usuário cujos alertas ativos serão filtrados.
+        :return:        Resposta HTTP contendo os alertas ativos do usuário.
+        """
+
+        active_alerts = Alert.objects.filter(id_user=id_user, is_active=True)
+        
+        data = []
+        for alert in active_alerts:
+            alert_data = AlertSerializer(alert, context={'request': request}).data
+            alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
+            alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
+            alert_data['emails'] = [email.email for email in alert.emails.all()]
+            data.append(alert_data)
+        
+        return Response(data)
+
+    @action(detail=False, methods=['get'], url_path='run/today')
+    def get_active_alerts_run_today(self, request):
+        """
+        Retorna os alertas ativos cujo campo 'run' é igual à data de hoje.
+
+        :param request: Requisição HTTP.
+        :return:        Resposta HTTP contendo os alertas ativos com 'run' igual à data de hoje.
+        """
+
+        today = datetime.date.today()
+        active_alerts = Alert.objects.filter(run=today, is_active=True)
+        
+        data = []
+        for alert in active_alerts:
+            alert_data = AlertSerializer(alert, context={'request': request}).data
+            alert_data['keywords'] = [keyword.word for keyword in alert.keywords.all()]
+            alert_data['forums'] = [forum.forum_name for forum in alert.forums.all()]
+            alert_data['emails'] = [email.email for email in alert.emails.all()]
+            data.append(alert_data)
+        
+        return Response(data)
 
 
 class PostAlertedViewSet(viewsets.ModelViewSet):
