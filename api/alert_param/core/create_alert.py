@@ -82,8 +82,9 @@ class CreateAlert:
     @staticmethod
     def create_alerts(
             id_user: int,
+            start_date: date,
             final_date: date,
-            qte_frequency: int,
+            qtde_frequency: int,
             type_frequency: str,
             is_relevant: float
         ) -> Alert:
@@ -91,26 +92,27 @@ class CreateAlert:
         Método para criação de alertas.
 
         :param id_user:         ID do usuário.
+        :param start_date:      Data inicial.
         :param final_date:      Data final.
-        :param qte_frequency:   Frequência de quantidade.
+        :param qtde_frequency:   Frequência de quantidade.
         :param type_frequency:  Tipo de frequência.
         :param is_relevant:     Relevância.
         :return:                Objeto criado de alerta.
         """
 
         sao_paulo_tz = pytz.timezone('America/Sao_Paulo')
-        start_date = timezone.now().astimezone(sao_paulo_tz).date()
+        start_date = start_date.astimezone(sao_paulo_tz).date()
         last_run = timezone.now().astimezone(sao_paulo_tz).date()
 
-        run = timezone.now().astimezone(sao_paulo_tz).date()
+        run = start_date
         if type_frequency == 'days':
-            run += timezone.timedelta(days=qte_frequency)
+            run += timezone.timedelta(days=qtde_frequency)
         elif type_frequency == 'weeks':
-            run += timezone.timedelta(weeks=qte_frequency)
+            run += timezone.timedelta(weeks=qtde_frequency)
         elif type_frequency == 'months':
-            run += timezone.timedelta(months=qte_frequency)
+            run += timezone.timedelta(months=qtde_frequency)
         elif type_frequency == 'years':
-            run += timezone.timedelta(years=qte_frequency)
+            run += timezone.timedelta(years=qtde_frequency)
         else:
             raise ValueError('Tipo de frequência inválido.')
 
@@ -122,7 +124,7 @@ class CreateAlert:
             id_user         = id_user,
             start_date      = start_date,
             final_date      = final_date,
-            qte_frequency   = qte_frequency,
+            qtde_frequency   = qtde_frequency,
             type_frequency  = type_frequency,
             is_relevant     = is_relevant,
             last_run        = last_run,
@@ -155,7 +157,7 @@ class CreateAlert:
             'id_user'       : alert.id_user,
             'start_date'    : alert.start_date,
             'final_date'    : alert.final_date,
-            'qte_frequency' : alert.qte_frequency,
+            'qtde_frequency' : alert.qtde_frequency,
             'type_frequency': alert.type_frequency,
             'is_relevant'   : alert.is_relevant,
             'last_run'      : alert.last_run,
@@ -195,7 +197,7 @@ class CreateAlert:
             id_user         = int(data['id_user'])
             start_date      = datetime.strptime(data['start_date'], '%Y-%m-%d').date()
             final_date      = datetime.strptime(data['final_date'], '%Y-%m-%d').date()
-            qte_frequency   = int(data['qte_frequency'])
+            qtde_frequency   = int(data['qtde_frequency'])
             type_frequency  = data['type_frequency']
             is_relevant     = float(data['is_relevant'])
 
@@ -256,8 +258,9 @@ class CreateAlert:
         try:
             alert = CreateAlert.create_alerts(
                 id_user         = id_user,
+                start_date      = start_date,
                 final_date      = final_date,
-                qte_frequency   = qte_frequency,
+                qtde_frequency   = qtde_frequency,
                 type_frequency  = type_frequency,
                 is_relevant     = is_relevant,
             )

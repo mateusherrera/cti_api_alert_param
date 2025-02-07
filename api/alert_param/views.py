@@ -7,7 +7,10 @@ Módulo que define as views da aplicação alert_param.
 :created at:    2024-10-25
 """
 
+import pytz
+
 from datetime import date
+from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -221,6 +224,51 @@ class AlertViewSet(viewsets.ModelViewSet):
             context={ 'request': request }
         )
 
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'], url_path='update-run')
+    def update_run(self, request, pk=None):
+        """
+        Atualiza o campo 'run' do alerta para a próxima data com base na frequência.
+
+        :param request: Requisição HTTP.
+        :param pk:      Chave primária do alerta.
+        :return:        Resposta HTTP contendo o alerta atualizado.
+        """
+        alert = self.get_object()
+        sao_paulo_tz = pytz.timezone('America/Sao_Paulo')
+
+        last_run    = alert.run.astimezone(sao_paulo_tz).date()
+        final_date  = alert.final_date.astimezone(sao_paulo_tz).date()
+
+        if last_run >= final_date:
+            alert.is_active = False
+            alert.save()
+
+            serializer = AlertSerializer(alert, context={'request': request})
+            return Response(serializer.data)
+
+        next_run = alert.run.astimezone(sao_paulo_tz).date()
+        qtde_frequency = alert.qtde_frequency
+        type_frequency = alert.type_frequency
+
+        if type_frequency == 'days':
+            next_run += timezone.timedelta(days=qtde_frequency)
+        elif type_frequency == 'weeks':
+            next_run += timezone.timedelta(weeks=qtde_frequency)
+        elif type_frequency == 'months':
+            next_run += timezone.timedelta(months=qtde_frequency)
+        elif type_frequency == 'years':
+            next_run += timezone.timedelta(years=qtde_frequency)
+
+        if next_run > final_date:
+            next_run = final_date
+
+        alert.last_run = last_run
+        alert.run = next_run
+        alert.save()
+
+        serializer = AlertSerializer(alert, context={'request': request})
         return Response(serializer.data)
 
     pass
