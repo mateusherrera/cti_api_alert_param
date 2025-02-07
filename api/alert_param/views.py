@@ -1,8 +1,6 @@
 """
 Módulo que define as views da aplicação alert_param.
 
-TODO: Melhorar retornos de metodos de alertas
-
 :created by:    Mateus Herrera
 :created at:    2024-10-25
 """
