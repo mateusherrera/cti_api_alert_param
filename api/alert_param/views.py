@@ -111,6 +111,81 @@ class AlertViewSet(viewsets.ModelViewSet):
             )
         return UpdateAlert().update_run(request, alert)
 
+    @action(detail=True, methods=['put'], url_path='keywords')
+    def update_keywords(self, request, pk=None):
+        """
+        Atualiza as palavras-chave de um alerta.
+
+        :param request: Requisição HTTP.
+        :param pk:      Chave primária do alerta.
+        :return:        Resposta HTTP contendo o alerta atualizado.
+        """
+
+        try:
+            alert = Alert.objects.get(pk=pk)
+        except Alert.DoesNotExist as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_FOUND_ALERT,
+                error={
+                    'code': ResponseErrorCode.ERROR_UPDATE_KEYWORDS[0],
+                    'message': ResponseErrorCode.ERROR_UPDATE_KEYWORDS[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_404_NOT_FOUND
+            )
+
+        return UpdateAlert().update_keywords(request, alert)
+    
+    @action(detail=True, methods=['put'], url_path='forums')
+    def update_forums(self, request, pk=None):
+        """
+        Atualiza os fóruns de um alerta.
+
+        :param request: Requisição HTTP.
+        :param pk:      Chave primária do alerta.
+        :return:        Resposta HTTP contendo o alerta atualizado.
+        """
+
+        try:
+            alert = Alert.objects.get(pk=pk)
+        except Alert.DoesNotExist as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_FOUND_ALERT,
+                error={
+                    'code': ResponseErrorCode.ERROR_UPDATE_FORUMS[0],
+                    'message': ResponseErrorCode.ERROR_UPDATE_FORUMS[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_404_NOT_FOUND
+            )
+
+        return UpdateAlert().update_forums(request, alert)
+    
+    @action(detail=True, methods=['put'], url_path='emails')
+    def update_emails(self, request, pk=None):
+        """
+        Atualiza os e-mails de um alerta.
+
+        :param request: Requisição HTTP.
+        :param pk:      Chave primária do alerta.
+        :return:        Resposta HTTP contendo o alerta atualizado.
+        """
+
+        try:
+            alert = Alert.objects.get(pk=pk)
+        except Alert.DoesNotExist as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_FOUND_ALERT,
+                error={
+                    'code': ResponseErrorCode.ERROR_UPDATE_EMAILS[0],
+                    'message': ResponseErrorCode.ERROR_UPDATE_EMAILS[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_404_NOT_FOUND
+            )
+
+        return UpdateAlert().update_emails(request, alert)
+
     @action(detail=True, methods=['get'], url_path='deactivate')
     def deactivate(self, request, pk=None):
         """

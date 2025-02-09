@@ -26,4 +26,8 @@ class ResponseErrorCode:
 
     ERROR_ALERT_UPDATE_RUN              = (14, 'Erro ao tentar atualizar próximo dia a rodar alerta.'   )
     ERROR_DEACTIVATE_ALERT              = (15, 'Erro ao tentar desativar alerta. Não encontrado'        )
+
+    ERROR_UPDATE_KEYWORDS               = (16, 'Erro ao tentar atualizar palavras-chave.'               )
+    ERROR_UPDATE_FORUMS                 = (17, 'Erro ao tentar atualizar fóruns.'                       )
+    ERROR_UPDATE_EMAILS                 = (18, 'Erro ao tentar atualizar e-mails.'                      )
     pass

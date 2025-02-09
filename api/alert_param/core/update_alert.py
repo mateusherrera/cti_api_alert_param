@@ -11,6 +11,7 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from alert_param.core.create_alert import CreateAlert
 from alert_param.core.utils.response_builder import ResponseBuilder
 from alert_param.core.utils.response_messages import ResponseMessages
 from alert_param.core.utils.response_error_code import ResponseErrorCode
@@ -128,6 +129,117 @@ class UpdateAlert:
 
         return ResponseBuilder.build_response(
             ResponseMessages.ALERT_INACTIVE,
+            data=data
+        )
+
+    @staticmethod
+    def update_keywords(request, alert):
+        """
+        Atualiza palavras-chave do alerta.
+
+        :param request: Request da requisição.
+        :param alert:   Objeto a se atualizar.
+        :return:        Response do resultado.
+        """
+
+        try:
+            nw_keywords = request.data.get('keywords', [])
+            alert.keywords.clear()
+
+            CreateAlert.add_keywords(alert, nw_keywords)
+
+        except Exception as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_ALERT_UPDATE_KEYWORDS,
+                error={
+                    'code': ResponseErrorCode.ERROR_UPDATE_KEYWORDS[0],
+                    'message': ResponseErrorCode.ERROR_UPDATE_KEYWORDS[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_500_INTERNAL_SERVER
+            )
+        
+        serializer = AlertSerializer(alert, context={'request': request})
+
+        data = serializer.data
+        data = UpdateAlert.get_ntn_fields(alert, data)
+
+        return ResponseBuilder.build_response(
+            ResponseMessages.ALERT_KEYWORDS_UPDATED,
+            data=data
+        )
+    
+    @staticmethod
+    def update_forums(request, alert):
+        """
+        Atualiza fóruns do alerta.
+
+        :param request: Request da requisição.
+        :param alert:   Objeto a se atualizar.
+        :return:        Response do resultado.
+        """
+
+        try:
+            nw_forums = request.data.get('forums', [])
+            alert.forums.clear()
+
+            CreateAlert.add_forums(alert, nw_forums)
+
+        except Exception as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_ALERT_UPDATE_FORUMS,
+                error={
+                    'code': ResponseErrorCode.ERROR_UPDATE_FORUMS[0],
+                    'message': ResponseErrorCode.ERROR_UPDATE_FORUMS[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_500_INTERNAL_SERVER
+            )
+
+        serializer = AlertSerializer(alert, context={'request': request})
+
+        data = serializer.data
+        data = UpdateAlert.get_ntn_fields(alert, data)
+
+        return ResponseBuilder.build_response(
+            ResponseMessages.ALERT_FORUMS_UPDATED,
+            data=data
+        )
+    
+    @staticmethod
+    def update_emails(request, alert):
+        """
+        Atualiza emails do alerta.
+
+        :param request: Request da requisição.
+        :param alert:   Objeto a se atualizar.
+        :return:        Response do resultado.
+        """
+
+        try:
+            nw_emails = request.data.get('emails', [])
+            alert.emails.clear()
+
+            CreateAlert.add_emails(alert, nw_emails)
+
+        except Exception as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_ALERT_UPDATE_EMAILS,
+                error={
+                    'code': ResponseErrorCode.ERROR_UPDATE_EMAILS[0],
+                    'message': ResponseErrorCode.ERROR_UPDATE_EMAILS[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_500_INTERNAL_SERVER
+            )
+
+        serializer = AlertSerializer(alert, context={'request': request})
+
+        data = serializer.data
+        data = UpdateAlert.get_ntn_fields(alert, data)
+
+        return ResponseBuilder.build_response(
+            ResponseMessages.ALERT_EMAILS_UPDATED,
             data=data
         )
 
