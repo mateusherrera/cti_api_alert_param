@@ -159,7 +159,7 @@ class PostAlerted(Base):
     class Meta:
         """ Meta informações para a classe GeneratedAlert. """
 
-        db_table = f'{SCHEMA_NAME}generated_alert'
+        db_table = f'{SCHEMA_NAME}post_alerted'
 
         verbose_name = 'Post Alerted'
         verbose_name_plural = 'Posts Alerted'
