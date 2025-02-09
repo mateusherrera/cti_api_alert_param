@@ -108,6 +108,29 @@ class UpdateAlert:
             data=data
         )
 
+    @staticmethod
+    def deactivate(request, alert):
+        """
+        Desativa alerta.
+
+        :param request: Request da requisição.
+        :param alert:   Objeto a se desativar.
+        :return:        Response do resultado.
+        """
+
+        alert.is_active = False
+        alert.save()
+
+        serializer = AlertSerializer(alert, context={'request': request})
+
+        data = serializer.data
+        data = UpdateAlert.get_ntn_fields(alert, data)
+
+        return ResponseBuilder.build_response(
+            ResponseMessages.ALERT_INACTIVE,
+            data=data
+        )
+
     # end: methods
 
     # end: class

@@ -97,8 +97,44 @@ class AlertViewSet(viewsets.ModelViewSet):
         :return:        Resposta HTTP contendo o alerta atualizado.
         """
 
-        alert = Alert.objects.get(pk=pk)
+        try:
+            alert = Alert.objects.get(pk=pk)
+        except Alert.DoesNotExist as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_FOUND_ALERT,
+                error={
+                    'code': ResponseErrorCode.ERROR_ALERT_UPDATE_RUN[0],
+                    'message': ResponseErrorCode.ERROR_ALERT_UPDATE_RUN[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_404_NOT_FOUND
+            )
         return UpdateAlert().update_run(request, alert)
+
+    @action(detail=True, methods=['get'], url_path='deactivate')
+    def deactivate(self, request, pk=None):
+        """
+        Desativa um alerta.
+
+        :param request: Requisição HTTP.
+        :param pk:      Chave primária do alerta.
+        :return:        Resposta HTTP contendo o alerta desativado.
+        """
+
+        try:
+            alert = Alert.objects.get(pk=pk)
+        except Alert.DoesNotExist as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_FOUND_ALERT,
+                error={
+                    'code': ResponseErrorCode.ERROR_DEACTIVATE_ALERT[0],
+                    'message': ResponseErrorCode.ERROR_DEACTIVATE_ALERT[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_404_NOT_FOUND
+            )
+
+        return UpdateAlert().deactivate(request, alert)
 
     def list(self, request, *args, **kwargs):
         """

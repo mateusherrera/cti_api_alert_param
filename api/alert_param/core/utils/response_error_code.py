@@ -25,4 +25,5 @@ class ResponseErrorCode:
     ERROR_LIST_RUN_TODAY                = (13, 'Erro ao tentar listar alertas que deve rodar hoje.'     )
 
     ERROR_ALERT_UPDATE_RUN              = (14, 'Erro ao tentar atualizar próximo dia a rodar alerta.'   )
+    ERROR_DEACTIVATE_ALERT              = (15, 'Erro ao tentar desativar alerta. Não encontrado'        )
     pass

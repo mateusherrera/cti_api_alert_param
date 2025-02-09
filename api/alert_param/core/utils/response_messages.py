@@ -21,8 +21,10 @@ class ResponseMessages:
     LIST_ALERTS                 = 'Alertas listados com sucesso.'
 
     ERROR_LIST_ALERTS           = 'Erro ao tentar listar alertas.'
+    ERROR_FOUND_ALERT           = 'Alerta não encontrado.'
 
     ALERT_INACTIVE              = 'Alerta foi inativado.'
+    ALERT_INACTIVE_METHOD       = 'Alerta desativado com sucesso.'
     ALERT_RUN_UPDATED           = 'Próximo dia a rodar alerta atualizado com sucesso.'
 
     ERROR_ALERT_UPDATE_RUN      = 'Erro ao tentar atualizar próximo dia a rodar alerta.'
