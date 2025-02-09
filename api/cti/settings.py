@@ -110,11 +110,11 @@ TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = '/api/static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_URL = '/api/media/'
-MEDIA_ROOT = path.join(BASE_DIR, 'mediafiles')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = path.join(BASE_DIR, 'media')
 
 # Rest Framework
 REST_FRAMEWORK = {
