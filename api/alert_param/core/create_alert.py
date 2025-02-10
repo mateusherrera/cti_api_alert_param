@@ -37,13 +37,12 @@ class CreateAlert:
         :param forums: Lista de fóruns.
         """
 
-        try:
-            for forum in forums:
+        for forum in forums:
+            try:
                 forum_obj, _ = Forum.objects.get_or_create(forum_name=forum.upper())
                 alert.forums.add(forum_obj)
-
-        except Exception as err:
-            raise ValueError(f'Erro ao adicionar fóruns. (forum={forum})')
+            except:
+                raise ValueError(f'Erro ao adicionar fóruns. (forum={forum})')
 
     @staticmethod
     def add_emails(alert: Alert, emails: list):
@@ -54,13 +53,12 @@ class CreateAlert:
         :param emails: Lista de e-mails.
         """
 
-        try:
-            for email in emails:
+        for email in emails:
+            try:
                 email_obj, _ = Email.objects.get_or_create(email=email)
                 alert.emails.add(email_obj)
-        
-        except Exception as err:
-            raise ValueError(f'Erro ao adicionar e-mails. (email={email})')
+            except:
+                raise ValueError(f'Erro ao adicionar e-mails. (email={email})')
 
     @staticmethod
     def add_keywords(alert: Alert, keywords: list):
@@ -71,13 +69,12 @@ class CreateAlert:
         :param keywords: Lista de palavras-chave.
         """
 
-        try:
-            for keyword in keywords:
+        for keyword in keywords:
+            try:
                 keyword_obj, _ = Keyword.objects.get_or_create(word=keyword.upper())
                 alert.keywords.add(keyword_obj)
-        
-        except Exception as err:
-            raise ValueError(f'Erro ao adicionar palavras-chave. (keyword={keyword})')
+            except:
+                raise ValueError(f'Erro ao adicionar palavras-chave. (keyword={keyword})')
 
     @staticmethod
     def create_alerts(
