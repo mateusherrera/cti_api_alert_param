@@ -19,6 +19,8 @@ from alert_param.core.utils.response_error_code import ResponseErrorCode
 
 from alert_param.core.update_alert import UpdateAlert
 from alert_param.core.create_alert import CreateAlert
+from alert_param.core.create_post_alerted import CreatePostAlerted
+
 from alert_param.serializers import (
     AlertSerializer,
     ForumSerializer,
@@ -220,13 +222,10 @@ class AlertViewSet(viewsets.ModelViewSet):
         """
         
         alerts = Alert.objects.all()
-        data = []
+        data = list()
 
         try:
-            for alert in alerts:
-                alert_data = AlertSerializer(alert, context={'request': request}).data
-                alert_data = UpdateAlert.get_ntn_fields(alert, alert_data)
-                data.append(alert_data)
+            data = UpdateAlert.get_data_alert(request, alerts)
 
         except Exception as err:
             return ResponseBuilder.build_response(
@@ -255,13 +254,10 @@ class AlertViewSet(viewsets.ModelViewSet):
         """
 
         alerts = Alert.objects.filter(id_user=id_user)
-        data = []
+        data = list()
 
         try:
-            for alert in alerts:
-                alert_data = AlertSerializer(alert, context={'request': request}).data
-                alert_data = UpdateAlert.get_ntn_fields(alert, alert_data)
-                data.append(alert_data)
+            data = UpdateAlert.get_data_alert(request, alerts)
 
         except Exception as err:
             return ResponseBuilder.build_response(
@@ -290,13 +286,10 @@ class AlertViewSet(viewsets.ModelViewSet):
         """
 
         active_alerts = Alert.objects.filter(id_user=id_user, is_active=True)
-        data = []
+        data = list()
 
         try:
-            for alert in active_alerts:
-                alert_data = AlertSerializer(alert, context={'request': request}).data
-                alert_data = UpdateAlert.get_ntn_fields(alert, alert_data)
-                data.append(alert_data)
+            data = UpdateAlert.get_data_alert(request, active_alerts)
 
         except Exception as err:
             return ResponseBuilder.build_response(
@@ -325,13 +318,10 @@ class AlertViewSet(viewsets.ModelViewSet):
 
         today = datetime.date.today()
         active_alerts = Alert.objects.filter(run=today, is_active=True)
-        data = []
+        data = list()
 
         try:
-            for alert in active_alerts:
-                alert_data = AlertSerializer(alert, context={'request': request}).data
-                alert_data = UpdateAlert.get_ntn_fields(alert, alert_data)
-                data.append(alert_data)
+            data = UpdateAlert.get_data_alert(request, active_alerts)
 
         except Exception as err:
             return ResponseBuilder.build_response(
@@ -357,4 +347,97 @@ class PostAlertedViewSet(viewsets.ModelViewSet):
 
     queryset = PostAlerted.objects.all()
     serializer_class = PostAlertedSerializer
+
+    def create(self, request, *args, **kwargs):
+        """
+        Cria um novo post alertado.
+
+        :param request: Requisição HTTP.
+        :return:        Resposta HTTP contendo o post alertado criado.
+        """
+
+        return CreatePostAlerted.create(request)
+    
+    @staticmethod
+    def _get_data_post_alerted(request, posts_alerted):
+        """
+        Retorna os dados dos posts alertados.
+
+        :param request:         Requisição HTTP.
+        :param posts_alerted:   QuerySet contendo os posts alertados.
+        :return:                Lista contendo os dados dos posts alertados.
+        """
+
+        data = list()
+
+        for post_alerted in posts_alerted:
+            post_alerted_data = PostAlertedSerializer(post_alerted, context={'request': request}).data
+            post_alerted_data['keywords_found'] = [ keyword.word for keyword in post_alerted.keywords_found.all() ]
+            post_alerted_data['forum'] = post_alerted.forum.forum_name
+            data.append(post_alerted_data)
+
+        return data
+
+    def list(self, request, *args, **kwargs):
+        """
+        Sobrescreve o método list para incluir campos adicionais nos relacionamentos ManyToMany.
+
+        :param request: Requisição HTTP.
+        :return:        Resposta HTTP contendo a lista de posts alertados com campos adicionais.
+        """
+
+        posts_alerted = PostAlerted.objects.all()
+        data = list()
+
+        try:
+            data = self._get_data_post_alerted(request, posts_alerted)
+
+        except Exception as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_LIST_POSTS_ALERTED,
+                error={
+                    'code': ResponseErrorCode.ERROR_LIST_POSTS_ALERTED[0],
+                    'message': ResponseErrorCode.ERROR_LIST_POSTS_ALERTED[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+        return ResponseBuilder.build_response(
+            ResponseMessages.LIST_POSTS_ALERTED,
+            data=data
+        )
+    
+    @action(detail=False, methods=['get'], url_path='alert/(?P<id_alert>[^/.]+)')
+    def get_post_alerted_by_alert(self, request, id_alert=None):
+        """
+        Retorna os posts alertados associados a um determinado alerta.
+
+        :param request:     Requisição HTTP.
+        :param id_alert:    ID do alerta cujos posts alertados serão filtrados.
+        :return:            Resposta HTTP contendo os posts alertados do alerta.
+        """
+
+        posts_alerted = PostAlerted.objects.filter(alert_id=id_alert)
+        data = list()
+
+        try:
+            data = self._get_data_post_alerted(request, posts_alerted)
+
+        except Exception as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_LIST_POSTS_ALERTED,
+                error={
+                    'code': ResponseErrorCode.ERROR_LIST_POSTS_ALERTED_BY_ALERT[0],
+                    'message': ResponseErrorCode.ERROR_LIST_POSTS_ALERTED_BY_ALERT[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        return ResponseBuilder.build_response(
+            ResponseMessages.LIST_POSTS_ALERTED,
+            data=data
+        )
+
     pass

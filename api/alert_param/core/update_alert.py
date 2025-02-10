@@ -38,6 +38,23 @@ class UpdateAlert:
         data['keywords']    = [ keyword.word for keyword in alert.keywords.all() ]
         data['forums']      = [ forum.forum_name for forum in alert.forums.all() ]
         return data
+    
+    @staticmethod
+    def get_data_alert(request: Request, alerts: list) -> list:
+        """
+        Retorna os campos necessários para atualizar alerta.
+
+        :param request: Request da requisição.
+        :param alerts:  Lista de alertas.
+        :return:        Lista de alertas tratados.
+        """
+
+        data = list()
+        for alert in alerts:
+            alert_data = AlertSerializer(alert, context={'request': request}).data
+            alert_data = UpdateAlert.get_ntn_fields(alert, alert_data)
+            data.append(alert_data)
+        return data
 
     @staticmethod
     def update_run(request: Request, alert: Alert) -> Response:

@@ -30,4 +30,8 @@ class ResponseErrorCode:
     ERROR_UPDATE_KEYWORDS               = (16, 'Erro ao tentar atualizar palavras-chave.'               )
     ERROR_UPDATE_FORUMS                 = (17, 'Erro ao tentar atualizar fóruns.'                       )
     ERROR_UPDATE_EMAILS                 = (18, 'Erro ao tentar atualizar e-mails.'                      )
+
+    ERROR_CREATE_POST_ALERTED           = (19, 'Erro ao tentar criar post alertado.'                    )
+    ERROR_LIST_POSTS_ALERTED            = (20, 'Erro ao tentar listar posts alertados.'                 )
+    ERROR_LIST_POSTS_ALERTED_BY_ALERT   = (21, 'Erro ao tentar listar posts alertados por alerta.'      )
     pass

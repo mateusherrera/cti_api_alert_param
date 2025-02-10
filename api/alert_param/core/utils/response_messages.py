@@ -10,6 +10,7 @@ class ResponseMessages:
     """ Classe para armazenar mensagens de retorno dos endpoints de serviços. """
 
     SUCCESS_CREATE_ALERT        = 'Alerta criado com sucesso.'
+    SUCCESS_CREATE_POST_ALERTED = 'Post alertado criado com sucesso.'
 
     ERROR_EMPTY_BODY            = 'O corpo da requisição está vazio.'
     ERROR_MISSING_FIELDS        = 'Parâmetro obrigatório não informado.'
@@ -18,6 +19,7 @@ class ResponseMessages:
     ERROR_CREATE_ALERT          = 'Erro ao tentar criar alerta.'
 
     LIST_ALERTS                 = 'Alertas listados com sucesso.'
+    LIST_POSTS_ALERTED          = 'Posts alertados listados com sucesso.'
 
     ERROR_LIST_ALERTS           = 'Erro ao tentar listar alertas.'
     ERROR_FOUND_ALERT           = 'Alerta não encontrado.'
@@ -34,4 +36,7 @@ class ResponseMessages:
     ERROR_ALERT_UPDATE_KEYWORDS = 'Erro ao tentar atualizar palavras-chave do alerta.'
     ERROR_ALERT_UPDATE_FORUMS   = 'Erro ao tentar atualizar fóruns do alerta.'
     ERROR_ALERT_UPDATE_EMAILS   = 'Erro ao tentar atualizar emails do alerta.'
+
+    ERROR_CREATE_POST_ALERTED   = 'Erro ao tentar criar post alertado.'
+    ERROR_LIST_POSTS_ALERTED    = 'Erro ao tentar listar posts alertados.'
     pass
