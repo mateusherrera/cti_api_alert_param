@@ -211,8 +211,7 @@ class CreateAlert:
                 )
             
             if start_date < timezone.now().astimezone(pytz.timezone('America/Sao_Paulo')).date():
-                start_date = timezone.now().astimezone(pytz.timezone('America/Sao_Paulo')).date()
-                start_date = datetime.strftime(start_date, '%Y-%m-%d').date()
+                start_date = datetime.strptime(datetime.strftime(start_date, '%Y-%m-%d'), '%Y-%m-%d').date()
 
             if final_date < timezone.now().astimezone(pytz.timezone('America/Sao_Paulo')).date():
                 return ResponseBuilder.build_response(
