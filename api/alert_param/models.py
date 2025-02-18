@@ -118,7 +118,13 @@ class Alert(Base):
     final_date      = models.DateField()
     qte_frequency   = models.IntegerField()
     type_frequency  = models.CharField(max_length=100)
-    is_relevant     = models.FloatField(default=1.0, validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
+    is_relevant     = models.FloatField(
+        default=1.0,
+        validators=[
+            MinValueValidator(0.0),
+            MaxValueValidator(1.0)
+        ]
+    )
     last_run        = models.DateField()
     run             = models.DateField()
 
