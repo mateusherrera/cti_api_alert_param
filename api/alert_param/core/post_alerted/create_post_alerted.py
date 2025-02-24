@@ -93,16 +93,20 @@ class CreatePostAlerted:
             )
 
         try:
-            id_post         = data['id_post']
-            title           = data['title']
-            description     = data['description']
-            alert           = Alert.objects.get(id=int(data['alert']))
-            forum           = Forum.objects.get(forum_name=data['forum'].upper())
+            if type(data['keywords_found']) == list:
+                keywords_found = data['keywords_found']
+            else:
+                keywords_found = [data['keywords_found']]
 
-            keywords_found  = list(data['keywords_found'])
+            date            = data['date']
+            title           = data['title']
+            id_post         = data['id_post']
+            description     = data['description']
 
             relevance       = float(data['relevance'])
-            date            = data['date']
+
+            alert           = Alert.objects.get(id=int(data['alert']))
+            forum           = Forum.objects.get(forum_name=data['forum'].upper())
 
         except KeyError as err:
             return ResponseBuilder.build_response(
