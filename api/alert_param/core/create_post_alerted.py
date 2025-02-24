@@ -112,6 +112,7 @@ class CreatePostAlerted:
                     'code'      : ResponseErrorCode.ERROR_MISSING_FIELDS[0],
                     'message'   : ResponseErrorCode.ERROR_MISSING_FIELDS[1],
                     'request'   : request.data or None,
+                    'missing'   : f'{err}',
                     'error'     : f'{type(err)}',
                 },
                 http_status=status.HTTP_400_BAD_REQUEST

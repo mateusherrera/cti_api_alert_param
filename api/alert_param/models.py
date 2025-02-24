@@ -108,6 +108,8 @@ class Email(Base):
 class Alert(Base):
     """ Model para armazenar parâmetros de perfis de alertas criados. """
 
+    name        = models.CharField(max_length=255)
+
     forums      = models.ManyToManyField(Forum)
     emails      = models.ManyToManyField(Email)
     keywords    = models.ManyToManyField(Keyword)

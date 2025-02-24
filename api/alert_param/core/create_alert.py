@@ -78,6 +78,7 @@ class CreateAlert:
 
     @staticmethod
     def create_alerts(
+            name: str,
             id_user: int,
             start_date: date,
             final_date: date,
@@ -88,6 +89,7 @@ class CreateAlert:
         """
         Método para criação de alertas.
 
+        :param name:            Nome do alerta.
         :param id_user:         ID do usuário.
         :param start_date:      Data inicial.
         :param final_date:      Data final.
@@ -117,6 +119,7 @@ class CreateAlert:
             raise ValueError('A primeira data de execução não pode ultrapassar a data final.')
 
         alert = Alert.objects.create(
+            name            = name,
             is_active       = True,
             id_user         = id_user,
             start_date      = start_date,
@@ -146,6 +149,7 @@ class CreateAlert:
         return {
             'id'            : alert.id,
 
+            'name'          : alert.name,
             'forums'        : [ forum.forum_name for forum in alert.forums.all()    ],
             'emails'        : [ email.email for email in alert.emails.all()         ],
             'keywords'      : [ keyword.word for keyword in alert.keywords.all()    ],
@@ -187,9 +191,11 @@ class CreateAlert:
             )
 
         try:
-            keywords    = list(data['keywords'])
-            forums      = list(data['forums'])
-            emails      = list(data['emails'])
+            name            = data['name']
+
+            keywords        = list(data['keywords'])
+            forums          = list(data['forums'])
+            emails          = list(data['emails'])
 
             id_user         = int(data['id_user'])
             start_date      = datetime.strptime(data['start_date'], '%Y-%m-%d').date()
@@ -233,6 +239,7 @@ class CreateAlert:
                     'code'      : ResponseErrorCode.ERROR_MISSING_FIELDS[0],
                     'message'   : ResponseErrorCode.ERROR_MISSING_FIELDS[1],
                     'request'   : request.data or None,
+                    'missing'   : f'{err}',
                     'error'     : f'{type(err)}',
                 },
                 http_status=status.HTTP_400_BAD_REQUEST
@@ -253,6 +260,7 @@ class CreateAlert:
 
         try:
             alert = CreateAlert.create_alerts(
+                name            = name,
                 id_user         = id_user,
                 start_date      = start_date,
                 final_date      = final_date,
