@@ -5,16 +5,18 @@ Urls do projeto CTI.
 :created at:    2024-10-25
 """
 
-from django.conf import settings
-from django.contrib import admin
-from django.urls import path, include
-from django.conf.urls.static import static
+from django.conf                import settings
+from django.contrib             import admin
+from django.urls                import path, include
+from django.conf.urls.static    import static
 
 from alert_param.urls import alert_param_router
 
 
+# URL base da API
 BASE    = 'api'
 VERSION = 'v1'
+
 
 urlpatterns = [
     # Admin

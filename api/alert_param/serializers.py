@@ -6,7 +6,7 @@ Módulo que contém os serializadores dos models do app alert_param.
 """
 
 from rest_framework import serializers
-from datetime import date, timedelta
+from datetime       import date, timedelta
 
 from alert_param.models import (
     Alert,

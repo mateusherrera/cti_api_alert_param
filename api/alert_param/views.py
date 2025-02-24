@@ -7,19 +7,18 @@ Módulo que define as views da aplicação alert_param.
 
 import datetime
 
-from rest_framework import status
-from rest_framework import viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
+from rest_framework             import status
+from rest_framework             import viewsets
+from rest_framework.decorators  import action
+from rest_framework.response    import Response
 
+from core.response_utils.response_builder    import ResponseBuilder
+from core.response_utils.response_messages   import ResponseMessages
+from core.response_utils.response_error_code import ResponseErrorCode
 
-from alert_param.core.utils.response_builder import ResponseBuilder
-from alert_param.core.utils.response_messages import ResponseMessages
-from alert_param.core.utils.response_error_code import ResponseErrorCode
-
-from alert_param.core.update_alert import UpdateAlert
-from alert_param.core.create_alert import CreateAlert
-from alert_param.core.create_post_alerted import CreatePostAlerted
+from alert_param.core.alert.create_alert                import CreateAlert
+from alert_param.core.alert.update_alert                import UpdateAlert
+from alert_param.core.post_alerted.create_post_alerted  import CreatePostAlerted
 
 from alert_param.serializers import (
     AlertSerializer,

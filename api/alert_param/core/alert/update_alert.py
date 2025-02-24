@@ -7,17 +7,18 @@ Módulo responsável por atualizar proximo dia a rodar alerta.
 
 import datetime
 
-from rest_framework import status
-from rest_framework.request import Request
-from rest_framework.response import Response
+from rest_framework             import status
+from rest_framework.request     import Request
+from rest_framework.response    import Response
 
-from alert_param.core.create_alert import CreateAlert
-from alert_param.core.utils.response_builder import ResponseBuilder
-from alert_param.core.utils.response_messages import ResponseMessages
-from alert_param.core.utils.response_error_code import ResponseErrorCode
+from alert_param.core.alert.create_alert import CreateAlert
 
-from alert_param.models import Alert
-from alert_param.serializers import AlertSerializer
+from core.response_utils.response_builder    import ResponseBuilder
+from core.response_utils.response_messages   import ResponseMessages
+from core.response_utils.response_error_code import ResponseErrorCode
+
+from alert_param.models         import Alert
+from alert_param.serializers    import AlertSerializer
 
 
 class UpdateAlert:

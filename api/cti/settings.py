@@ -5,10 +5,10 @@ Settings para o projeto CTI.
 :created at:    2024-10-25
 """
 
-from os import path
-from pathlib import Path
-from decouple import config
-from datetime import timedelta
+from os         import path
+from pathlib    import Path
+from decouple   import config
+from datetime   import timedelta
 
 
 # Configurações do projeto
