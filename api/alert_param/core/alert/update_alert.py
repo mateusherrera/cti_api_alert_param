@@ -114,7 +114,7 @@ class UpdateAlert:
                     'message': ResponseErrorCode.ERROR_ALERT_UPDATE_RUN[1],
                     'error': f'{type(err)}'
                 },
-                http_status=status.HTTP_500_INTERNAL_SERVER
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         serializer = AlertSerializer(alert, context={'request': request})
@@ -174,7 +174,7 @@ class UpdateAlert:
                     'message': ResponseErrorCode.ERROR_UPDATE_KEYWORDS[1],
                     'error': f'{type(err)}'
                 },
-                http_status=status.HTTP_500_INTERNAL_SERVER
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
         
         serializer = AlertSerializer(alert, context={'request': request})
@@ -211,7 +211,7 @@ class UpdateAlert:
                     'message': ResponseErrorCode.ERROR_UPDATE_FORUMS[1],
                     'error': f'{type(err)}'
                 },
-                http_status=status.HTTP_500_INTERNAL_SERVER
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         serializer = AlertSerializer(alert, context={'request': request})
@@ -248,7 +248,7 @@ class UpdateAlert:
                     'message': ResponseErrorCode.ERROR_UPDATE_EMAILS[1],
                     'error': f'{type(err)}'
                 },
-                http_status=status.HTTP_500_INTERNAL_SERVER
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         serializer = AlertSerializer(alert, context={'request': request})
