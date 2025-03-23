@@ -266,7 +266,7 @@ class AlertViewSet(viewsets.ModelViewSet):
                     'message': ResponseErrorCode.ERROR_LIST_ALERTS_BY_USER[1],
                     'error': f'{type(err)}'
                 },
-                http_status=status.HTTP_500_INTERNAL_SERVER
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         return ResponseBuilder.build_response(
@@ -298,7 +298,7 @@ class AlertViewSet(viewsets.ModelViewSet):
                     'message': ResponseErrorCode.ERROR_LIST_ACTIVE_ALERTS_BY_USER[1],
                     'error': f'{type(err)}'
                 },
-                http_status=status.HTTP_500_INTERNAL_SERVER
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         return ResponseBuilder.build_response(
@@ -330,7 +330,7 @@ class AlertViewSet(viewsets.ModelViewSet):
                     'message': ResponseErrorCode.ERROR_LIST_RUN_TODAY[1],
                     'error': f'{type(err)}'
                 },
-                http_status=status.HTTP_500_INTERNAL_SERVER
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         return ResponseBuilder.build_response(
