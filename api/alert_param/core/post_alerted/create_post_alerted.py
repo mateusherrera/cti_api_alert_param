@@ -132,7 +132,7 @@ class CreatePostAlerted:
                     'request'   : request.data or None,
                     'error'     : f'{type(err)}',
                 },
-                http_status=status.HTTP_400_BAD_REQUEST
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         try:
