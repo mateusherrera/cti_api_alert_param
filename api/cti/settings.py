@@ -21,10 +21,11 @@ elif config('ENV') == 'dev':
     DEBUG = True
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
+
 if DEBUG:
     CORS_ORIGIN_ALLOW_ALL = True
 elif not DEBUG:
-    CORS_ORIGIN_WHITELIST = config('CORS_ORIGIN_WHITELIST', default='').split(',')
+    CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='').split(',')
 
 # Definições de aplicativos e middlewares
 INSTALLED_APPS = [
