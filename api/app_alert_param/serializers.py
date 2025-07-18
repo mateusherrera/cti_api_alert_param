@@ -1,14 +1,13 @@
 """
-Módulo que contém os serializadores dos models do app alert_param.
+Módulo que contém os serializadores dos models do app app_alert_param.
 
 :created by:    Mateus Herrera
-:created at:    2024-10-25
+:created at:    2025-07-18
 """
 
 from rest_framework import serializers
-from datetime       import date, timedelta
 
-from alert_param.models import (
+from app_alert_param.models import (
     Alert,
     Forum,
     Email,
@@ -25,9 +24,6 @@ class ForumSerializer(serializers.ModelSerializer):
 
         model = Forum
         fields = '__all__'
-        pass
-
-    pass
 
 
 class EmailSerializer(serializers.ModelSerializer):
@@ -38,9 +34,6 @@ class EmailSerializer(serializers.ModelSerializer):
 
         model = Email
         fields = '__all__'
-        pass
-
-    pass
 
 
 class KeywordSerializer(serializers.ModelSerializer):
@@ -51,9 +44,6 @@ class KeywordSerializer(serializers.ModelSerializer):
 
         model = Keyword
         fields = '__all__'
-        pass
-
-    pass
 
 
 class AlertSerializer(serializers.ModelSerializer):
@@ -72,9 +62,6 @@ class AlertSerializer(serializers.ModelSerializer):
             'last_run'      : { 'read_only': True },
             'run'           : { 'read_only': True },
         }
-        pass
-
-    pass
 
 
 class PostAlertedSerializer(serializers.ModelSerializer):
@@ -85,6 +72,3 @@ class PostAlertedSerializer(serializers.ModelSerializer):
 
         model = PostAlerted
         fields = '__all__'
-        pass
-
-    pass

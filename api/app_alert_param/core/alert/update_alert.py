@@ -2,7 +2,7 @@
 Módulo responsável por atualizar proximo dia a rodar alerta.
 
 :created by:    Mateus Herrera
-:created at:    2025-02-07
+:created at:    2025-07-18
 """
 
 import datetime
@@ -11,14 +11,14 @@ from rest_framework             import status
 from rest_framework.request     import Request
 from rest_framework.response    import Response
 
-from alert_param.core.alert.create_alert import CreateAlert
+from app_alert_param.core.alert.create_alert import CreateAlert
 
 from core.response_utils.response_builder    import ResponseBuilder
 from core.response_utils.response_messages   import ResponseMessages
 from core.response_utils.response_error_code import ResponseErrorCode
 
-from alert_param.models         import Alert
-from alert_param.serializers    import AlertSerializer
+from app_alert_param.models         import Alert
+from app_alert_param.serializers    import AlertSerializer
 
 
 class UpdateAlert:
@@ -39,7 +39,7 @@ class UpdateAlert:
         data['keywords']    = [ keyword.word for keyword in alert.keywords.all() ]
         data['forums']      = [ forum.forum_name for forum in alert.forums.all() ]
         return data
-    
+
     @staticmethod
     def get_data_alert(request: Request, alerts: list) -> list:
         """
@@ -56,6 +56,129 @@ class UpdateAlert:
             alert_data = UpdateAlert.get_ntn_fields(alert, alert_data)
             data.append(alert_data)
         return data
+
+    @classmethod
+    def list(cls, request: Request) -> Response:
+        """
+        Sobrescreve o método list para incluir campos adicionais nos relacionamentos ManyToMany.
+
+        :param request: Requisição HTTP.
+        :return:        Resposta HTTP contendo a lista de alertas com campos adicionais.
+        """
+
+        alerts = Alert.objects.all()
+
+        try:
+            data = cls.get_data_alert(request, alerts)
+
+        except Exception as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_LIST_ALERTS,
+                error={
+                    'code': ResponseErrorCode.ERROR_LIST_ALERTS[0],
+                    'message': ResponseErrorCode.ERROR_LIST_ALERTS[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        return ResponseBuilder.build_response(
+            ResponseMessages.LIST_ALERTS,
+            data=data
+        )
+    
+    @classmethod
+    def list_by_user(cls, request: Request, user_id: int) -> Response:
+        """
+        Listar alerta de um usuário.
+
+        :param request: Requisição HTTP.
+        :param user_id: ID do usuário.
+        :return:        Resposta HTTP contendo a lista de alertas com campos adicionais.
+        """
+
+        alerts = Alert.objects.filter(id_user=user_id)
+
+        try:
+            data = cls.get_data_alert(request, alerts)
+
+        except Exception as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_LIST_ALERTS,
+                error={
+                    'code': ResponseErrorCode.ERROR_LIST_ALERTS_BY_USER[0],
+                    'message': ResponseErrorCode.ERROR_LIST_ALERTS_BY_USER[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        return ResponseBuilder.build_response(
+            ResponseMessages.LIST_ALERTS,
+            data=data
+        )
+    
+    @classmethod
+    def list_active_by_user(cls, request: Request, user_id: int) -> Response:
+        """
+        Listar alertas ativos de um usuário.
+
+        :param request: Requisição HTTP.
+        :param user_id: ID do usuário.
+        :return:        Resposta HTTP contendo a lista de alertas ativos com campos adicionais.
+        """
+
+        active_alerts = Alert.objects.filter(id_user=user_id, is_active=True)
+
+        try:
+            data = UpdateAlert.get_data_alert(request, active_alerts)
+
+        except Exception as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_LIST_ALERTS,
+                error={
+                    'code': ResponseErrorCode.ERROR_LIST_ACTIVE_ALERTS_BY_USER[0],
+                    'message': ResponseErrorCode.ERROR_LIST_ACTIVE_ALERTS_BY_USER[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        return ResponseBuilder.build_response(
+            ResponseMessages.LIST_ALERTS,
+            data=data
+        )
+    
+    @classmethod
+    def list_active_alerts_run_today(cls, request: Request) -> Response:
+        """
+        Listar alertas ativos cujo campo 'run' é igual à data de hoje.
+
+        :param request: Requisição HTTP.
+        :return:        Resposta HTTP contendo a lista de alertas ativos com 'run' igual à data de hoje.
+        """
+
+        today = datetime.date.today()
+        active_alerts = Alert.objects.filter(run=today, is_active=True)
+
+        try:
+            data = UpdateAlert.get_data_alert(request, active_alerts)
+
+        except Exception as err:
+            return ResponseBuilder.build_response(
+                ResponseMessages.ERROR_LIST_ALERTS,
+                error={
+                    'code': ResponseErrorCode.ERROR_LIST_RUN_TODAY[0],
+                    'message': ResponseErrorCode.ERROR_LIST_RUN_TODAY[1],
+                    'error': f'{type(err)}'
+                },
+                http_status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        return ResponseBuilder.build_response(
+            ResponseMessages.LIST_ALERTS,
+            data=data
+        )
 
     @staticmethod
     def update_run(request: Request, alert: Alert) -> Response:
@@ -128,7 +251,7 @@ class UpdateAlert:
         )
 
     @staticmethod
-    def deactivate(request, alert):
+    def deactivate(request: Request, alert: Alert) -> Response:
         """
         Desativa alerta.
 
@@ -151,7 +274,7 @@ class UpdateAlert:
         )
 
     @staticmethod
-    def update_keywords(request, alert):
+    def update_keywords(request: Request, alert: Alert) -> Response:
         """
         Atualiza palavras-chave do alerta.
 
@@ -188,7 +311,7 @@ class UpdateAlert:
         )
     
     @staticmethod
-    def update_forums(request, alert):
+    def update_forums(request: Request, alert: Alert) -> Response:
         """
         Atualiza fóruns do alerta.
 
@@ -225,7 +348,7 @@ class UpdateAlert:
         )
     
     @staticmethod
-    def update_emails(request, alert):
+    def update_emails(request: Request, alert: Alert) -> Response:
         """
         Atualiza emails do alerta.
 

@@ -5,7 +5,6 @@ Módulo para classe de criação de registro de post alertado.
 :created at:    2025-02-10
 """
 
-from datetime                   import datetime
 from rest_framework             import status
 from rest_framework.request     import Request
 from rest_framework.response    import Response
@@ -14,7 +13,7 @@ from core.response_utils.response_builder    import ResponseBuilder
 from core.response_utils.response_messages   import ResponseMessages
 from core.response_utils.response_error_code import ResponseErrorCode
 
-from alert_param.models import (
+from app_alert_param.models import (
     Alert,
     Forum,
     Keyword,

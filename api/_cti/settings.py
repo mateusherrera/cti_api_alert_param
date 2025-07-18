@@ -2,14 +2,12 @@
 Settings para o projeto CTI.
 
 :created by:    Mateus Herrera
-:created at:    2024-10-25
+:created at:    2025-07-18
 """
 
 from os         import path
 from pathlib    import Path
 from decouple   import config
-from datetime   import timedelta
-
 
 # Configurações do projeto
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,7 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     # Apps internos
-    'alert_param',
+    'app_alert_param',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-ROOT_URLCONF = 'cti.urls'
+ROOT_URLCONF = '_cti.urls'
 
 TEMPLATES = [
     {
@@ -74,7 +72,7 @@ TEMPLATES = [
         },
     },
 ]
-WSGI_APPLICATION = 'cti.wsgi.application'
+WSGI_APPLICATION = '_cti.wsgi.application'
 
 DATABASES = {
     'default': {

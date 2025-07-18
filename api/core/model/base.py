@@ -2,7 +2,7 @@
 Módulo base para os modelos do aplicativo alert_param.
 
 :created by:    Mateus Herrera
-:created at:    2025-02-24
+:created at:    2025-07-18
 """
 
 from django.db import models
@@ -19,6 +19,3 @@ class Base(models.Model):
         """ Meta informações para a classe Base. """
 
         abstract = True
-        pass
-
-    pass
