@@ -1,47 +1,49 @@
 services:
+  db:
+    image: postgres:16
+    container_name: ${CONTAINER_NAME}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ${PGDATA_PATH}:/var/lib/postgresql/data
+
   api:
+    restart: unless-stopped
     build:
       context: ./api
       dockerfile: Dockerfile
     container_name: cti_alerts_api
-    restart: always
-    env_file:
-      - ./api/.env
-    command: gunicorn cti.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn -w 4 --threads 2 cti.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ./api:/api
+      - static_volume:/api/staticfiles/
+      - media_volume:/api/mediafiles/
     expose:
       - "8000"
-
-  db:
-    image: postgres:15
-    container_name: cti_alerts_db
-    restart: always
-    env_file:
-      - ./api/.env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./db/init-scripts:/docker-entrypoint-initdb.d
-    # expose:
-    ports:
-      - "5432:5432"
+    depends_on:
+      - db
 
   nginx:
+    restart: unless-stopped
     build:
       context: ./nginx
       dockerfile: Dockerfile
     container_name: cti_alerts_nginx
-    restart: always
-    env_file:
-      - ./api/.env
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./api/staticfiles:/api/staticfiles
-      - ./api/media:/api/media
+      - static_volume:/api/staticfiles/
+      - media_volume:/api/mediafiles/
     ports:
-      - "8877:8877"
+      - "443:443"
     depends_on:
       - api
 
 volumes:
-  postgres_data:
+  static_volume:
+  media_volume:
